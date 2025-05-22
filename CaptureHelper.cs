@@ -1,0 +1,242 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
+
+namespace WowShot2
+{
+	public static class CaptureHelper
+	{
+		public static void CaptureAllScreens(string outputDir, string formatExt = "png")
+		{
+			Rectangle bounds = GetVirtualScreenBounds();
+
+			using (Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height))
+			{
+				using (Graphics g = Graphics.FromImage(bitmap))
+				{
+					g.CopyFromScreen(bounds.Left, bounds.Top, 0, 0, bounds.Size, CopyPixelOperation.SourceCopy);
+				}
+
+				string filename = $"screencap_{DateTime.Now:yyyyMMdd_HHmmss}.{formatExt}";
+				string fullPath = Path.Combine(outputDir, filename);
+
+				ImageFormat format = formatExt.ToLower() switch
+				{
+					"jpg" or "jpeg" => ImageFormat.Jpeg,
+					"bmp" => ImageFormat.Bmp,
+					_ => ImageFormat.Png,
+				};
+
+				bitmap.Save(fullPath, format);
+			}
+		}
+
+		private static Rectangle GetVirtualScreenBounds()
+		{
+			int left = int.MaxValue;
+			int top = int.MaxValue;
+			int right = int.MinValue;
+			int bottom = int.MinValue;
+
+			foreach (var screen in Screen.AllScreens)
+			{
+				if (screen.Bounds.Left < left) left = screen.Bounds.Left;
+				if (screen.Bounds.Top < top) top = screen.Bounds.Top;
+				if (screen.Bounds.Right > right) right = screen.Bounds.Right;
+				if (screen.Bounds.Bottom > bottom) bottom = screen.Bounds.Bottom;
+			}
+
+			return new Rectangle(left, top, right - left, bottom - top);
+		}
+
+
+		[DllImport("user32.dll")]
+		private static extern IntPtr GetForegroundWindow();
+
+		[DllImport("user32.dll")]
+		private static extern bool GetWindowRect(IntPtr hWnd, out RECT rect);
+
+		[DllImport("dwmapi.dll")]
+		private static extern int DwmGetWindowAttribute(IntPtr hwnd, int dwAttribute, out RECT pvAttribute, int cbAttribute);
+
+		private const int DWMWA_EXTENDED_FRAME_BOUNDS = 9;
+
+		[StructLayout(LayoutKind.Sequential)]
+		private struct RECT
+		{
+			public int Left;
+			public int Top;
+			public int Right;
+			public int Bottom;
+		}
+
+		public static void CaptureActiveWindow(string outputDir, string formatExt = "png")
+		{
+			IntPtr hWnd = GetForegroundWindow();
+
+			if (hWnd == IntPtr.Zero)
+				throw new InvalidOperationException("アクティブウィンドウが取得できませんでした。");
+
+			// DPI補正済みのウィンドウ矩形を取得
+			RECT rect;
+			int result = DwmGetWindowAttribute(hWnd, DWMWA_EXTENDED_FRAME_BOUNDS, out rect, Marshal.SizeOf(typeof(RECT)));
+			if (result != 0)
+				throw new InvalidOperationException("DwmGetWindowAttribute による取得に失敗しました。");
+
+			Rectangle bounds = new Rectangle(
+				rect.Left,
+				rect.Top,
+				rect.Right - rect.Left,
+				rect.Bottom - rect.Top
+			);
+
+			using Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height);
+			using (Graphics g = Graphics.FromImage(bitmap))
+			{
+				g.CopyFromScreen(bounds.Location, Point.Empty, bounds.Size);
+			}
+
+			string filename = $"activewin_{DateTime.Now:yyyyMMdd_HHmmss}.{formatExt}";
+			string fullPath = Path.Combine(outputDir, filename);
+
+			ImageFormat format = formatExt.ToLower() switch
+			{
+				"jpg" or "jpeg" => ImageFormat.Jpeg,
+				"bmp" => ImageFormat.Bmp,
+				_ => ImageFormat.Png,
+			};
+
+			bitmap.Save(fullPath, format);
+		}
+
+		[DllImport("Shcore.dll")]
+		private static extern int GetDpiForMonitor(IntPtr hmonitor, MonitorDpiType dpiType, out uint dpiX, out uint dpiY);
+
+		private enum MonitorDpiType
+		{
+			MDT_EFFECTIVE_DPI = 0,
+			MDT_ANGULAR_DPI = 1,
+			MDT_RAW_DPI = 2,
+			MDT_DEFAULT = MDT_EFFECTIVE_DPI
+		}
+
+		[DllImport("user32.dll")]
+		private static extern IntPtr MonitorFromPoint(Point pt, uint dwFlags);
+
+		public static void CaptureSpecificScreen(int screenIndex, string outputDir, string formatExt = "png")
+		{
+			var screens = Screen.AllScreens;
+			if (screenIndex < 0 || screenIndex >= screens.Length)
+				throw new ArgumentOutOfRangeException(nameof(screenIndex));
+
+			var screen = screens[screenIndex];
+			var bounds = screen.Bounds;
+
+			using Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height);
+			using (Graphics g = Graphics.FromImage(bitmap))
+			{
+				g.CopyFromScreen(bounds.Location, Point.Empty, bounds.Size);
+			}
+
+			string filename = $"screen{screenIndex}_{DateTime.Now:yyyyMMdd_HHmmss}.{formatExt}";
+			string fullPath = Path.Combine(outputDir, filename);
+
+			ImageFormat format = formatExt.ToLower() switch
+			{
+				"jpg" or "jpeg" => ImageFormat.Jpeg,
+				"bmp" => ImageFormat.Bmp,
+				_ => ImageFormat.Png,
+			};
+
+			bitmap.Save(fullPath, format);
+		}
+
+		public static void CaptureSelectedRegion(string outputDir, string formatExt = "png")
+		{
+			using FormRegionSelector selector = new FormRegionSelector();
+			if (selector.ShowDialog() == DialogResult.OK)
+			{
+				Rectangle region = selector.SelectedRegion;
+				if (region.Width == 0 || region.Height == 0)
+					throw new InvalidOperationException("範囲が無効です。");
+
+				using Bitmap bitmap = new Bitmap(region.Width, region.Height);
+				using (Graphics g = Graphics.FromImage(bitmap))
+				{
+					g.CopyFromScreen(region.Location, Point.Empty, region.Size);
+				}
+
+				string filename = $"region_{DateTime.Now:yyyyMMdd_HHmmss}.{formatExt}";
+				string fullPath = Path.Combine(outputDir, filename);
+
+				ImageFormat format = formatExt.ToLower() switch
+				{
+					"jpg" or "jpeg" => ImageFormat.Jpeg,
+					"bmp" => ImageFormat.Bmp,
+					_ => ImageFormat.Png,
+				};
+
+				bitmap.Save(fullPath, format);
+			}
+		}
+
+		public static void CapturePhysicalScreen(int screenIndex, string outputDir, string formatExt = "png")
+		{
+			var monitors = GetAllMonitors();
+
+			if (screenIndex < 0 || screenIndex >= monitors.Count)
+				throw new ArgumentOutOfRangeException(nameof(screenIndex));
+
+			var bounds = monitors[screenIndex];
+
+			using Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height);
+			using (Graphics g = Graphics.FromImage(bitmap))
+			{
+				g.CopyFromScreen(bounds.Location, Point.Empty, bounds.Size);
+			}
+
+			string filename = $"screen{screenIndex}_{DateTime.Now:yyyyMMdd_HHmmss}.{formatExt}";
+			string fullPath = Path.Combine(outputDir, filename);
+
+			ImageFormat format = formatExt.ToLower() switch
+			{
+				"jpg" or "jpeg" => ImageFormat.Jpeg,
+				"bmp" => ImageFormat.Bmp,
+				_ => ImageFormat.Png,
+			};
+
+			bitmap.Save(fullPath, format);
+		}
+
+		public static List<Rectangle> GetAllMonitors()
+		{
+			List<Rectangle> monitorRects = new List<Rectangle>();
+
+			bool MonitorEnum(IntPtr hMonitor, IntPtr hdc, ref RECT lprcMonitor, IntPtr dwData)
+			{
+				Rectangle bounds = new Rectangle(
+					lprcMonitor.Left,
+					lprcMonitor.Top,
+					lprcMonitor.Right - lprcMonitor.Left,
+					lprcMonitor.Bottom - lprcMonitor.Top
+				);
+				monitorRects.Add(bounds);
+				return true;
+			}
+
+			EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero, MonitorEnum, IntPtr.Zero);
+			return monitorRects;
+		}
+
+		private delegate bool MonitorEnumProc(IntPtr hMonitor, IntPtr hdcMonitor, ref RECT lprcMonitor, IntPtr dwData);
+
+		[DllImport("user32.dll")]
+		private static extern bool EnumDisplayMonitors(IntPtr hdc, IntPtr lprcClip, MonitorEnumProc lpfnEnum, IntPtr dwData);
+
+	}
+
+}
