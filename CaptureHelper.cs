@@ -4,56 +4,13 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace WowShot2
 {
 	public static class CaptureHelper
 	{
-		public static void CaptureAllScreens(string outputDir, string formatExt = "png")
-		{
-			Rectangle bounds = GetVirtualScreenBounds();
-
-			using (Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height))
-			{
-				using (Graphics g = Graphics.FromImage(bitmap))
-				{
-					g.CopyFromScreen(bounds.Left, bounds.Top, 0, 0, bounds.Size, CopyPixelOperation.SourceCopy);
-				}
-
-				string filename = $"screencap_{DateTime.Now:yyyyMMdd_HHmmss}.{formatExt}";
-				string fullPath = Path.Combine(outputDir, filename);
-
-				ImageFormat format = formatExt.ToLower() switch
-				{
-					"jpg" or "jpeg" => ImageFormat.Jpeg,
-					"bmp" => ImageFormat.Bmp,
-					_ => ImageFormat.Png,
-				};
-
-				bitmap.Save(fullPath, format);
-			}
-		}
-
-		private static Rectangle GetVirtualScreenBounds()
-		{
-			int left = int.MaxValue;
-			int top = int.MaxValue;
-			int right = int.MinValue;
-			int bottom = int.MinValue;
-
-			foreach (var screen in Screen.AllScreens)
-			{
-				if (screen.Bounds.Left < left) left = screen.Bounds.Left;
-				if (screen.Bounds.Top < top) top = screen.Bounds.Top;
-				if (screen.Bounds.Right > right) right = screen.Bounds.Right;
-				if (screen.Bounds.Bottom > bottom) bottom = screen.Bounds.Bottom;
-			}
-
-			return new Rectangle(left, top, right - left, bottom - top);
-		}
-
-
 		[DllImport("user32.dll")]
 		private static extern IntPtr GetForegroundWindow();
 
@@ -74,7 +31,54 @@ namespace WowShot2
 			public int Bottom;
 		}
 
-		public static void CaptureActiveWindow(string outputDir, string formatExt = "png")
+		[DllImport("Shcore.dll")]
+		private static extern int GetDpiForMonitor(IntPtr hmonitor, MonitorDpiType dpiType, out uint dpiX, out uint dpiY);
+
+		private enum MonitorDpiType
+		{
+			MDT_EFFECTIVE_DPI = 0,
+			MDT_ANGULAR_DPI = 1,
+			MDT_RAW_DPI = 2,
+			MDT_DEFAULT = MDT_EFFECTIVE_DPI
+		}
+
+		[DllImport("user32.dll")]
+		private static extern IntPtr MonitorFromPoint(Point pt, uint dwFlags);
+
+
+		public static Bitmap CaptureAllScreens()
+		{
+			Rectangle bounds = GetVirtualScreenBounds();
+
+			Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height);
+
+			using (Graphics g = Graphics.FromImage(bitmap))
+			{
+				g.CopyFromScreen(bounds.Left, bounds.Top, 0, 0, bounds.Size, CopyPixelOperation.SourceCopy);
+			}
+
+			return bitmap;
+		}
+
+		private static Rectangle GetVirtualScreenBounds()
+		{
+			int left = int.MaxValue;
+			int top = int.MaxValue;
+			int right = int.MinValue;
+			int bottom = int.MinValue;
+
+			foreach (var screen in Screen.AllScreens)
+			{
+				if (screen.Bounds.Left < left) left = screen.Bounds.Left;
+				if (screen.Bounds.Top < top) top = screen.Bounds.Top;
+				if (screen.Bounds.Right > right) right = screen.Bounds.Right;
+				if (screen.Bounds.Bottom > bottom) bottom = screen.Bounds.Bottom;
+			}
+
+			return new Rectangle(left, top, right - left, bottom - top);
+		}
+
+		public static Bitmap CaptureActiveWindow()
 		{
 			IntPtr hWnd = GetForegroundWindow();
 
@@ -94,68 +98,17 @@ namespace WowShot2
 				rect.Bottom - rect.Top
 			);
 
-			using Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height);
+			Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height);
+
 			using (Graphics g = Graphics.FromImage(bitmap))
 			{
 				g.CopyFromScreen(bounds.Location, Point.Empty, bounds.Size);
 			}
 
-			string filename = $"activewin_{DateTime.Now:yyyyMMdd_HHmmss}.{formatExt}";
-			string fullPath = Path.Combine(outputDir, filename);
-
-			ImageFormat format = formatExt.ToLower() switch
-			{
-				"jpg" or "jpeg" => ImageFormat.Jpeg,
-				"bmp" => ImageFormat.Bmp,
-				_ => ImageFormat.Png,
-			};
-
-			bitmap.Save(fullPath, format);
+			return bitmap;
 		}
 
-		[DllImport("Shcore.dll")]
-		private static extern int GetDpiForMonitor(IntPtr hmonitor, MonitorDpiType dpiType, out uint dpiX, out uint dpiY);
-
-		private enum MonitorDpiType
-		{
-			MDT_EFFECTIVE_DPI = 0,
-			MDT_ANGULAR_DPI = 1,
-			MDT_RAW_DPI = 2,
-			MDT_DEFAULT = MDT_EFFECTIVE_DPI
-		}
-
-		[DllImport("user32.dll")]
-		private static extern IntPtr MonitorFromPoint(Point pt, uint dwFlags);
-
-		public static void CaptureSpecificScreen(int screenIndex, string outputDir, string formatExt = "png")
-		{
-			var screens = Screen.AllScreens;
-			if (screenIndex < 0 || screenIndex >= screens.Length)
-				throw new ArgumentOutOfRangeException(nameof(screenIndex));
-
-			var screen = screens[screenIndex];
-			var bounds = screen.Bounds;
-
-			using Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height);
-			using (Graphics g = Graphics.FromImage(bitmap))
-			{
-				g.CopyFromScreen(bounds.Location, Point.Empty, bounds.Size);
-			}
-
-			string filename = $"screen{screenIndex}_{DateTime.Now:yyyyMMdd_HHmmss}.{formatExt}";
-			string fullPath = Path.Combine(outputDir, filename);
-
-			ImageFormat format = formatExt.ToLower() switch
-			{
-				"jpg" or "jpeg" => ImageFormat.Jpeg,
-				"bmp" => ImageFormat.Bmp,
-				_ => ImageFormat.Png,
-			};
-
-			bitmap.Save(fullPath, format);
-		}
-
-		public static void CaptureSelectedRegion(string outputDir, string formatExt = "png")
+		public static Bitmap? CaptureSelectedRegion()
 		{
 			using FormRegionSelector selector = new FormRegionSelector();
 			if (selector.ShowDialog() == DialogResult.OK)
@@ -164,27 +117,39 @@ namespace WowShot2
 				if (region.Width == 0 || region.Height == 0)
 					throw new InvalidOperationException("範囲が無効です。");
 
-				using Bitmap bitmap = new Bitmap(region.Width, region.Height);
+				Bitmap bitmap = new Bitmap(region.Width, region.Height);
+
 				using (Graphics g = Graphics.FromImage(bitmap))
 				{
 					g.CopyFromScreen(region.Location, Point.Empty, region.Size);
 				}
 
-				string filename = $"region_{DateTime.Now:yyyyMMdd_HHmmss}.{formatExt}";
-				string fullPath = Path.Combine(outputDir, filename);
-
-				ImageFormat format = formatExt.ToLower() switch
-				{
-					"jpg" or "jpeg" => ImageFormat.Jpeg,
-					"bmp" => ImageFormat.Bmp,
-					_ => ImageFormat.Png,
-				};
-
-				bitmap.Save(fullPath, format);
+				return bitmap;
 			}
+
+			return null;
 		}
 
-		public static void CapturePhysicalScreen(int screenIndex, string outputDir, string formatExt = "png")
+		public static Bitmap CaptureScreenIndex(int screenIndex)
+		{
+			var screens = Screen.AllScreens;
+			if (screenIndex < 0 || screenIndex >= screens.Length)
+				throw new ArgumentOutOfRangeException(nameof(screenIndex));
+
+			var screen = screens[screenIndex];
+			var bounds = screen.Bounds;
+
+			Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height);
+
+			using (Graphics g = Graphics.FromImage(bitmap))
+			{
+				g.CopyFromScreen(bounds.Location, Point.Empty, bounds.Size);
+			}
+
+			return bitmap;
+		}
+
+		public static Bitmap CapturePhysicalScreen(int screenIndex)
 		{
 			var monitors = GetAllMonitors();
 
@@ -193,23 +158,14 @@ namespace WowShot2
 
 			var bounds = monitors[screenIndex];
 
-			using Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height);
+			Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height);
+
 			using (Graphics g = Graphics.FromImage(bitmap))
 			{
 				g.CopyFromScreen(bounds.Location, Point.Empty, bounds.Size);
 			}
 
-			string filename = $"screen{screenIndex}_{DateTime.Now:yyyyMMdd_HHmmss}.{formatExt}";
-			string fullPath = Path.Combine(outputDir, filename);
-
-			ImageFormat format = formatExt.ToLower() switch
-			{
-				"jpg" or "jpeg" => ImageFormat.Jpeg,
-				"bmp" => ImageFormat.Bmp,
-				_ => ImageFormat.Png,
-			};
-
-			bitmap.Save(fullPath, format);
+			return bitmap;
 		}
 
 		public static List<Rectangle> GetAllMonitors()
@@ -236,7 +192,5 @@ namespace WowShot2
 
 		[DllImport("user32.dll")]
 		private static extern bool EnumDisplayMonitors(IntPtr hdc, IntPtr lprcClip, MonitorEnumProc lpfnEnum, IntPtr dwData);
-
 	}
-
 }

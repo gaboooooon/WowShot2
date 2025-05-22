@@ -70,16 +70,15 @@ namespace WowShot2
 			}
 
 			// キャプチャ対象の分岐
-			Bitmap? captured = null;
-			//Bitmap ? captured = profile.CaptureTarget switch
-			//{
-			//	"全ディスプレイ" => CaptureHelper.CaptureAllScreens(),
-			//	"アクティブウィンドウ" => CaptureHelper.CaptureActiveWindow(),
-			//	"選択範囲" => CaptureHelper.CaptureSelectedRegion(),
-			//	var target when target.StartsWith("ディスプレイ") =>
-			//		TryCaptureDisplay(target, out var bmp) ? bmp : null,
-			//	_ => null
-			//};
+			Bitmap? captured = profile.CaptureTarget switch
+			{
+				"全ディスプレイ" => CaptureHelper.CaptureAllScreens(),
+				"アクティブウィンドウ" => CaptureHelper.CaptureActiveWindow(),
+				"選択範囲" => CaptureHelper.CaptureSelectedRegion(),
+				var target when target.StartsWith("ディスプレイ") =>
+					TryCaptureDisplay(target, out var bmp) ? bmp : null,
+				_ => null
+			};
 
 			if (captured == null)
 			{
@@ -99,6 +98,8 @@ namespace WowShot2
 			if (profile.SaveToFile)
 			{
 				Directory.CreateDirectory(profile.SaveDirectory);
+				captured.Save("C:\\Projects\\sample.jpg");
+
 				captured.Save(fullPath, ext switch
 				{
 					"jpg" => ImageFormat.Jpeg,
@@ -123,18 +124,19 @@ namespace WowShot2
 			trayIcon.ShowBalloonTip(1000, "キャプチャ完了", $"{fileName}.{ext} を保存しました", ToolTipIcon.Info);
 		}
 
-		//private bool TryCaptureDisplay(string target, out Bitmap? bitmap)
-		//{
-		//	bitmap = null;
+		private bool TryCaptureDisplay(string target, out Bitmap? bitmap)
+		{
+			bitmap = null;
 
-		//	if (!int.TryParse(target.Replace("ディスプレイ", ""), out int index)) return false;
+			if (!int.TryParse(target.Replace("ディスプレイ", ""), out int index)) return false;
 
-		//	int screenCount = Screen.AllScreens.Length;
-		//	if (index < 1 || index > screenCount) return false;
+			int screenCount = Screen.AllScreens.Length;
+			if (index < 1 || index > screenCount) return false;
 
-		//	bitmap = CaptureHelper.CaptureScreenIndex(index - 1); // 0-based index
-		//	return bitmap != null;
-		//}
+			bitmap = CaptureHelper.CaptureScreenIndex(index - 1); // 0-based index
+			//bitmap = CaptureHelper.CapturePhysicalScreen(index - 1); // 0-based index
+			return bitmap != null;
+		}
 
 		private void OnOpenSettings(object sender, EventArgs e)
 		{
