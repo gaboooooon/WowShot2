@@ -112,29 +112,39 @@ namespace WowShot2
 
 		private async void PerformCapture(CaptureShortcutProfile profile)
 		{
-			if (profile.UseDelay)
+			// 遅延キャプチャ
+			if (profile.UseDelay && profile.DelaySeconds > 0)
 			{
 				await Task.Delay(profile.DelaySeconds * 1000);
 			}
 
+			// キャプチャ対象の分岐
 			Bitmap? captured = null;
-			//Bitmap? captured = profile.Target switch
+			//Bitmap ? captured = profile.CaptureTarget switch
 			//{
-			//	"FullScreen" => CaptureHelper.CaptureAllScreens(),
-			//	"ActiveWindow" => CaptureHelper.CaptureActiveWindow(),
-			//	"Selection" => CaptureHelper.CaptureSelectedRegion(),
-			//	"Display1" => CaptureHelper.CaptureScreenIndex(0),
-			//	"Display2" => CaptureHelper.CaptureScreenIndex(1),
+			//	"全ディスプレイ" => CaptureHelper.CaptureAllScreens(),
+			//	"アクティブウィンドウ" => CaptureHelper.CaptureActiveWindow(),
+			//	"選択範囲" => CaptureHelper.CaptureSelectedRegion(),
+			//	var target when target.StartsWith("ディスプレイ") =>
+			//		TryCaptureDisplay(target, out var bmp) ? bmp : null,
 			//	_ => null
 			//};
 
-			if (captured == null) return;
+			if (captured == null)
+			{
+				MessageBox.Show("キャプチャに失敗しました。\n設定内容をご確認ください。",
+								"キャプチャエラー",
+								MessageBoxButtons.OK,
+								MessageBoxIcon.Error);
+				return;
+			}
 
 			// ファイル名生成
 			string fileName = ApplyFileNameTemplate(profile.FileNameTemplate, profile.LastUsedNumber, DateTime.Now);
 			string ext = profile.FileFormat.ToLower();
 			string fullPath = Path.Combine(profile.SaveDirectory, $"{fileName}.{ext}");
 
+			// ファイル保存
 			if (profile.SaveToFile)
 			{
 				Directory.CreateDirectory(profile.SaveDirectory);
@@ -146,19 +156,84 @@ namespace WowShot2
 				});
 			}
 
+			// クリップボードにコピー
 			if (profile.CopyToClipboard)
 			{
 				Clipboard.SetImage(captured);
 			}
 
+			// 連番更新
 			if (profile.RememberLastNumber)
 			{
 				profile.LastUsedNumber++;
-				settingsManager.Save(); // 保存
+				settingsManager.Save(); // JSONへ保存
 			}
 
 			trayIcon.ShowBalloonTip(1000, "キャプチャ完了", $"{fileName}.{ext} を保存しました", ToolTipIcon.Info);
 		}
+
+		//private bool TryCaptureDisplay(string target, out Bitmap? bitmap)
+		//{
+		//	bitmap = null;
+
+		//	if (!int.TryParse(target.Replace("ディスプレイ", ""), out int index)) return false;
+
+		//	int screenCount = Screen.AllScreens.Length;
+		//	if (index < 1 || index > screenCount) return false;
+
+		//	bitmap = CaptureHelper.CaptureScreenIndex(index - 1); // 0-based index
+		//	return bitmap != null;
+		//}
+
+		//private async void PerformCapture(CaptureShortcutProfile profile)
+		//{
+		//	if (profile.UseDelay)
+		//	{
+		//		await Task.Delay(profile.DelaySeconds * 1000);
+		//	}
+
+		//	Bitmap? captured = null;
+		//	//Bitmap? captured = profile.Target switch
+		//	//{
+		//	//	"FullScreen" => CaptureHelper.CaptureAllScreens(),
+		//	//	"ActiveWindow" => CaptureHelper.CaptureActiveWindow(),
+		//	//	"Selection" => CaptureHelper.CaptureSelectedRegion(),
+		//	//	"Display1" => CaptureHelper.CaptureScreenIndex(0),
+		//	//	"Display2" => CaptureHelper.CaptureScreenIndex(1),
+		//	//	_ => null
+		//	//};
+
+		//	if (captured == null) return;
+
+		//	// ファイル名生成
+		//	string fileName = ApplyFileNameTemplate(profile.FileNameTemplate, profile.LastUsedNumber, DateTime.Now);
+		//	string ext = profile.FileFormat.ToLower();
+		//	string fullPath = Path.Combine(profile.SaveDirectory, $"{fileName}.{ext}");
+
+		//	if (profile.SaveToFile)
+		//	{
+		//		Directory.CreateDirectory(profile.SaveDirectory);
+		//		captured.Save(fullPath, ext switch
+		//		{
+		//			"jpg" => ImageFormat.Jpeg,
+		//			"bmp" => ImageFormat.Bmp,
+		//			_ => ImageFormat.Png
+		//		});
+		//	}
+
+		//	if (profile.CopyToClipboard)
+		//	{
+		//		Clipboard.SetImage(captured);
+		//	}
+
+		//	if (profile.RememberLastNumber)
+		//	{
+		//		profile.LastUsedNumber++;
+		//		settingsManager.Save(); // 保存
+		//	}
+
+		//	trayIcon.ShowBalloonTip(1000, "キャプチャ完了", $"{fileName}.{ext} を保存しました", ToolTipIcon.Info);
+		//}
 
 		//public class FlashOverlay : Form
 		//{
