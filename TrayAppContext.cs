@@ -44,7 +44,6 @@ namespace WowShot2
 			trayIcon.ContextMenuStrip.Items.Add("アクティブウィンドウをキャプチャ", null, OnCaptureActiveWindow);
 			trayIcon.ContextMenuStrip.Items.Add("範囲選択してキャプチャ", null, OnCaptureRegion);
 			trayIcon.ContextMenuStrip.Items.Add("キャプチャ設定...", null, OnOpenSettings);
-			trayIcon.ContextMenuStrip.Items.Add("お試しメニュー", null, OnOpenSettings);
 			trayIcon.ContextMenuStrip.Items.Add(new ToolStripSeparator());
 			trayIcon.ContextMenuStrip.Items.Add("終了", null, OnExit);
 
