@@ -13,6 +13,8 @@ namespace WowShot2
 {
 	public class TrayAppContext : ApplicationContext
 	{
+		// ★不要コード残置バージョン★
+
 		private NotifyIcon trayIcon;
 		private Form dummyForm;
 		//private HotKeyManager hotKeyManager;
