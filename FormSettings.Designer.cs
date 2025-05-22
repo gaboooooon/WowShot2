@@ -136,7 +136,6 @@
 			// 
 			// comboBoxTarget
 			// 
-			comboBoxTarget.Anchor = AnchorStyles.Top | AnchorStyles.Right;
 			comboBoxTarget.DropDownStyle = ComboBoxStyle.DropDownList;
 			comboBoxTarget.FormattingEnabled = true;
 			comboBoxTarget.Items.AddRange(new object[] { "選択範囲", "アクティブウィンドウ", "全ディスプレイ", "ディスプレイ1", "ディスプレイ2", "ディスプレイ3", "ディスプレイ4", "ディスプレイ5", "ディスプレイ6", "ディスプレイ7", "ディスプレイ8", "ディスプレイ9" });
@@ -248,7 +247,7 @@
 			textBoxFileName.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 			textBoxFileName.Location = new Point(221, 384);
 			textBoxFileName.Name = "textBoxFileName";
-			textBoxFileName.Size = new Size(307, 31);
+			textBoxFileName.Size = new Size(354, 31);
 			textBoxFileName.TabIndex = 15;
 			// 
 			// label4

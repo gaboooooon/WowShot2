@@ -14,14 +14,14 @@ namespace WowShot2
 	public class TrayAppContext : ApplicationContext
 	{
 		private NotifyIcon trayIcon;
-		private HotKeyManager hotKeyManager;
-		private HotKeyManager activeWindowHotKeyManager;
 		private Form dummyForm;
-		private CaptureSettings settings;
+		//private HotKeyManager hotKeyManager;
+		//private HotKeyManager activeWindowHotKeyManager;
+		//private CaptureSettings settings;
 
-		private List<HotKeyManager> screenHotKeys = new();
-		private Dictionary<int, int> hotKeyIdToScreenIndex = new();
-		private int hotKeyIdCounter = 10; // ユニークなID
+		//private List<HotKeyManager> screenHotKeys = new();
+		//private Dictionary<int, int> hotKeyIdToScreenIndex = new();
+		//private int hotKeyIdCounter = 10; // ユニークなID
 
 		private CaptureSettingsManager settingsManager;
 		private List<HotKeyManager> hotKeyManagers = new();
@@ -30,19 +30,19 @@ namespace WowShot2
 
 		public TrayAppContext()
 		{
-			settings = CaptureSettings.Load();
+			//settings = CaptureSettings.Load();
 
 			trayIcon = new NotifyIcon()
 			{
 				Icon = SystemIcons.Application,
 				ContextMenuStrip = new ContextMenuStrip(),
-				Text = "画面キャプチャツール",
+				Text = "WowShot2",
 				Visible = true
 			};
 
-			trayIcon.ContextMenuStrip.Items.Add("今すぐキャプチャ", null, OnCaptureNow);
-			trayIcon.ContextMenuStrip.Items.Add("アクティブウィンドウをキャプチャ", null, OnCaptureActiveWindow);
-			trayIcon.ContextMenuStrip.Items.Add("範囲選択してキャプチャ", null, OnCaptureRegion);
+			//trayIcon.ContextMenuStrip.Items.Add("今すぐキャプチャ", null, OnCaptureNow);
+			//trayIcon.ContextMenuStrip.Items.Add("アクティブウィンドウをキャプチャ", null, OnCaptureActiveWindow);
+			//trayIcon.ContextMenuStrip.Items.Add("範囲選択してキャプチャ", null, OnCaptureRegion);
 			trayIcon.ContextMenuStrip.Items.Add("キャプチャ設定...", null, OnOpenSettings);
 			trayIcon.ContextMenuStrip.Items.Add(new ToolStripSeparator());
 			trayIcon.ContextMenuStrip.Items.Add("終了", null, OnExit);
@@ -61,44 +61,37 @@ namespace WowShot2
 			//	hotKeyManager.HotKeyPressed += (s2, e2) => OnCaptureNow(null, null);
 			//};
 
-			dummyForm.Shown += (s, e) =>
-			{
-				// 既存の全画面キャプチャ (Ctrl + Shift + A)
-				hotKeyManager = new HotKeyManager(dummyForm, Keys.A, HotKeyManager.Modifiers.Control | HotKeyManager.Modifiers.Shift);
-				hotKeyManager.HotKeyPressed += (s2, e2) => OnCaptureNow(null, null);
+			//dummyForm.Shown += (s, e) =>
+			//{
+			//	// 既存の全画面キャプチャ (Ctrl + Shift + A)
+			//	hotKeyManager = new HotKeyManager(dummyForm, Keys.A, HotKeyManager.Modifiers.Control | HotKeyManager.Modifiers.Shift);
+			//	hotKeyManager.HotKeyPressed += (s2, e2) => OnCaptureNow(null, null);
 
-				// 新規追加：アクティブウィンドウキャプチャ (Ctrl + Shift + W)
-				activeWindowHotKeyManager = new HotKeyManager(dummyForm, Keys.W, HotKeyManager.Modifiers.Control | HotKeyManager.Modifiers.Shift);
-				activeWindowHotKeyManager.HotKeyPressed += (s3, e3) => OnCaptureActiveWindow(null, null);
-			};
+			//	// 新規追加：アクティブウィンドウキャプチャ (Ctrl + Shift + W)
+			//	activeWindowHotKeyManager = new HotKeyManager(dummyForm, Keys.W, HotKeyManager.Modifiers.Control | HotKeyManager.Modifiers.Shift);
+			//	activeWindowHotKeyManager.HotKeyPressed += (s3, e3) => OnCaptureActiveWindow(null, null);
+			//};
 
-			dummyForm.Shown += (s, e) =>
-			{
-				// 既存ホットキー（全画面・アクティブウィンドウ）もそのまま残す
+			//dummyForm.Shown += (s, e) =>
+			//{
+			//	// 既存ホットキー（全画面・アクティブウィンドウ）もそのまま残す
 
-				for (int i = 0; i < Screen.AllScreens.Length; i++)
-				{
-					// キー：Ctrl + Shift + (1〜9)
-					Keys key = Keys.D1 + i; // D1 = '1' のキーコード
+			//	for (int i = 0; i < Screen.AllScreens.Length; i++)
+			//	{
+			//		// キー：Ctrl + Shift + (1〜9)
+			//		Keys key = Keys.D1 + i; // D1 = '1' のキーコード
 
-					var manager = new HotKeyManager(dummyForm, key, HotKeyManager.Modifiers.Control | HotKeyManager.Modifiers.Shift, hotKeyIdCounter);
-					manager.HotKeyPressed += OnScreenHotKeyPressed;
+			//		var manager = new HotKeyManager(dummyForm, key, HotKeyManager.Modifiers.Control | HotKeyManager.Modifiers.Shift, hotKeyIdCounter);
+			//		manager.HotKeyPressed += OnScreenHotKeyPressed;
 
-					screenHotKeys.Add(manager);
-					hotKeyIdToScreenIndex[hotKeyIdCounter] = i;
+			//		screenHotKeys.Add(manager);
+			//		hotKeyIdToScreenIndex[hotKeyIdCounter] = i;
 
-					hotKeyIdCounter++;
-				}
-			};
+			//		hotKeyIdCounter++;
+			//	}
+			//};
 
-			dummyForm.Load += (s, e) => dummyForm.Hide();
-			dummyForm.Show();
 
-			InitializeProfiles();
-		}
-
-		private void InitializeProfiles()
-		{
 			settingsManager = CaptureSettingsManager.Load();
 
 			foreach (var profile in settingsManager.Profiles)
@@ -112,6 +105,9 @@ namespace WowShot2
 				manager.HotKeyPressed += (s, e) => PerformCapture(profile);
 				hotKeyManagers.Add(manager);
 			}
+
+			dummyForm.Load += (s, e) => dummyForm.Hide();
+			dummyForm.Show();
 		}
 
 		private async void PerformCapture(CaptureShortcutProfile profile)
@@ -164,111 +160,111 @@ namespace WowShot2
 			trayIcon.ShowBalloonTip(1000, "キャプチャ完了", $"{fileName}.{ext} を保存しました", ToolTipIcon.Info);
 		}
 
-		public class FlashOverlay : Form
-		{
-			public FlashOverlay()
-			{
-				this.FormBorderStyle = FormBorderStyle.None;
-				this.Bounds = SystemInformation.VirtualScreen;
-				this.BackColor = Color.White;
-				this.Opacity = 0.6;
-				this.TopMost = true;
-				this.ShowInTaskbar = false;
-			}
+		//public class FlashOverlay : Form
+		//{
+		//	public FlashOverlay()
+		//	{
+		//		this.FormBorderStyle = FormBorderStyle.None;
+		//		this.Bounds = SystemInformation.VirtualScreen;
+		//		this.BackColor = Color.White;
+		//		this.Opacity = 0.6;
+		//		this.TopMost = true;
+		//		this.ShowInTaskbar = false;
+		//	}
 
-			public void Flash(int durationMs = 100)
-			{
-				Show();
-				Task.Delay(durationMs).ContinueWith(_ => Invoke(new Action(() => Close())));
-			}
-		}
+		//	public void Flash(int durationMs = 100)
+		//	{
+		//		Show();
+		//		Task.Delay(durationMs).ContinueWith(_ => Invoke(new Action(() => Close())));
+		//	}
+		//}
 
-		private void OnCaptureNow(object sender, EventArgs e)
-		{
-			string saveDir = string.IsNullOrWhiteSpace(settings.SaveDirectory)
-				? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "ScreenCaptures")
-				: settings.SaveDirectory;
+		//private void OnCaptureNow(object sender, EventArgs e)
+		//{
+		//	string saveDir = string.IsNullOrWhiteSpace(settings.SaveDirectory)
+		//		? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "ScreenCaptures")
+		//		: settings.SaveDirectory;
 
-			Directory.CreateDirectory(saveDir);
+		//	Directory.CreateDirectory(saveDir);
 
-			try
-			{
-				// シャッター音
-				System.Media.SystemSounds.Asterisk.Play(); // またはカスタム音
+		//	try
+		//	{
+		//		// シャッター音
+		//		System.Media.SystemSounds.Asterisk.Play(); // またはカスタム音
 
-				// 実際のキャプチャ
-				CaptureHelper.CaptureAllScreens(saveDir, settings.SaveFormat);
-				trayIcon.ShowBalloonTip(1000, "キャプチャ成功", "画面を保存しました。", ToolTipIcon.Info);
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show("キャプチャに失敗しました:\n" + ex.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-		}
+		//		// 実際のキャプチャ
+		//		CaptureHelper.CaptureAllScreens(saveDir, settings.SaveFormat);
+		//		trayIcon.ShowBalloonTip(1000, "キャプチャ成功", "画面を保存しました。", ToolTipIcon.Info);
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		MessageBox.Show("キャプチャに失敗しました:\n" + ex.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+		//	}
+		//}
 
-		private void OnCaptureActiveWindow(object sender, EventArgs e)
-		{
-			string saveDir = string.IsNullOrWhiteSpace(settings.SaveDirectory)
-				? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "ScreenCaptures")
-				: settings.SaveDirectory;
+		//private void OnCaptureActiveWindow(object sender, EventArgs e)
+		//{
+		//	string saveDir = string.IsNullOrWhiteSpace(settings.SaveDirectory)
+		//		? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "ScreenCaptures")
+		//		: settings.SaveDirectory;
 
-			Directory.CreateDirectory(saveDir);
+		//	Directory.CreateDirectory(saveDir);
 
-			try
-			{
-				CaptureHelper.CaptureActiveWindow(saveDir, settings.SaveFormat);
-				trayIcon.ShowBalloonTip(1000, "キャプチャ成功", "アクティブウィンドウを保存しました。", ToolTipIcon.Info);
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show("アクティブウィンドウのキャプチャに失敗しました:\n" + ex.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-		}
+		//	try
+		//	{
+		//		CaptureHelper.CaptureActiveWindow(saveDir, settings.SaveFormat);
+		//		trayIcon.ShowBalloonTip(1000, "キャプチャ成功", "アクティブウィンドウを保存しました。", ToolTipIcon.Info);
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		MessageBox.Show("アクティブウィンドウのキャプチャに失敗しました:\n" + ex.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+		//	}
+		//}
 
-		private void OnScreenHotKeyPressed(object sender, EventArgs e)
-		{
-			if (sender is HotKeyManager manager &&
-				hotKeyIdToScreenIndex.TryGetValue(manager.HotKeyId, out int screenIndex))
-			{
-				string saveDir = string.IsNullOrWhiteSpace(settings.SaveDirectory)
-					? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "ScreenCaptures")
-					: settings.SaveDirectory;
+		//private void OnScreenHotKeyPressed(object sender, EventArgs e)
+		//{
+		//	if (sender is HotKeyManager manager &&
+		//		hotKeyIdToScreenIndex.TryGetValue(manager.HotKeyId, out int screenIndex))
+		//	{
+		//		string saveDir = string.IsNullOrWhiteSpace(settings.SaveDirectory)
+		//			? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "ScreenCaptures")
+		//			: settings.SaveDirectory;
 
-				Directory.CreateDirectory(saveDir);
+		//		Directory.CreateDirectory(saveDir);
 
-				try
-				{
-					//CaptureHelper.CaptureSpecificScreen(screenIndex, saveDir, settings.SaveFormat);
-					CaptureHelper.CapturePhysicalScreen(screenIndex, saveDir, settings.SaveFormat);
+		//		try
+		//		{
+		//			//CaptureHelper.CaptureSpecificScreen(screenIndex, saveDir, settings.SaveFormat);
+		//			CaptureHelper.CapturePhysicalScreen(screenIndex, saveDir, settings.SaveFormat);
 
-					trayIcon.ShowBalloonTip(1000, "キャプチャ成功", $"ディスプレイ {screenIndex + 1} を保存しました。", ToolTipIcon.Info);
-				}
-				catch (Exception ex)
-				{
-					MessageBox.Show($"ディスプレイ{screenIndex + 1}のキャプチャに失敗しました:\n" + ex.Message,
-									"エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				}
-			}
-		}
+		//			trayIcon.ShowBalloonTip(1000, "キャプチャ成功", $"ディスプレイ {screenIndex + 1} を保存しました。", ToolTipIcon.Info);
+		//		}
+		//		catch (Exception ex)
+		//		{
+		//			MessageBox.Show($"ディスプレイ{screenIndex + 1}のキャプチャに失敗しました:\n" + ex.Message,
+		//							"エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+		//		}
+		//	}
+		//}
 
-		private void OnCaptureRegion(object sender, EventArgs e)
-		{
-			string saveDir = string.IsNullOrWhiteSpace(settings.SaveDirectory)
-				? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "ScreenCaptures")
-				: settings.SaveDirectory;
+		//private void OnCaptureRegion(object sender, EventArgs e)
+		//{
+		//	string saveDir = string.IsNullOrWhiteSpace(settings.SaveDirectory)
+		//		? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "ScreenCaptures")
+		//		: settings.SaveDirectory;
 
-			Directory.CreateDirectory(saveDir);
+		//	Directory.CreateDirectory(saveDir);
 
-			try
-			{
-				CaptureHelper.CaptureSelectedRegion(saveDir, settings.SaveFormat);
-				trayIcon.ShowBalloonTip(1000, "キャプチャ成功", "指定範囲を保存しました。", ToolTipIcon.Info);
-			}
-			catch (Exception ex)
-			{
-				MessageBox.Show("範囲選択キャプチャに失敗しました:\n" + ex.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-		}
+		//	try
+		//	{
+		//		CaptureHelper.CaptureSelectedRegion(saveDir, settings.SaveFormat);
+		//		trayIcon.ShowBalloonTip(1000, "キャプチャ成功", "指定範囲を保存しました。", ToolTipIcon.Info);
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		MessageBox.Show("範囲選択キャプチャに失敗しました:\n" + ex.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+		//	}
+		//}
 
 		private void OnOpenSettings(object sender, EventArgs e)
 		{
@@ -305,18 +301,17 @@ namespace WowShot2
 
 		private void OnExit(object sender, EventArgs e)
 		{
-			hotKeyManager?.Dispose();
-			activeWindowHotKeyManager?.Dispose();
-			foreach (var hk in screenHotKeys)
-			{
-				hk.Dispose();
-			}
+			//hotKeyManager?.Dispose();
+			//activeWindowHotKeyManager?.Dispose();
+			//foreach (var hk in screenHotKeys)
+			//{
+			//	hk.Dispose();
+			//}
 
 			foreach (var manager in hotKeyManagers)
 			{
 				manager.Dispose();
 			}
-
 
 			trayIcon.Visible = false;
 			dummyForm.Close();
