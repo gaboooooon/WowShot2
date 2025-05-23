@@ -63,6 +63,7 @@ namespace WowShot2
 			comboBoxTarget.SelectedIndex = 2; // デフォルト：全ディスプレイ
 
 			checkBoxRememberNumber.Checked = settingsManager.RememberGlobalLastUsedNumber;
+			checkBoxShowNotification.Checked = settingsManager.ShowCaptureNotification;
 		}
 
 		private void buttonKeyCapture_Click(object sender, EventArgs e)
@@ -410,6 +411,7 @@ namespace WowShot2
 		private void buttonOK_Click(object sender, EventArgs e)
 		{
 			settingsManager.RememberGlobalLastUsedNumber = checkBoxRememberNumber.Checked;
+			settingsManager.ShowCaptureNotification = checkBoxShowNotification.Checked;
 
 			buttonApply_Click(sender, e); // 保存処理
 			this.Close();

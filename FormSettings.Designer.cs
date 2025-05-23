@@ -36,8 +36,6 @@
 			buttonKeyCapture = new Button();
 			comboBoxTarget = new ComboBox();
 			label7 = new Label();
-			buttonClearCounter = new Button();
-			checkBoxRememberNumber = new CheckBox();
 			label6 = new Label();
 			textBoxDelay = new TextBox();
 			checkBoxUseDelay = new CheckBox();
@@ -59,11 +57,14 @@
 			textBoxKey = new TextBox();
 			textBoxProfileName = new TextBox();
 			label1 = new Label();
+			buttonClearCounter = new Button();
+			checkBoxRememberNumber = new CheckBox();
 			buttonCancel = new Button();
 			buttonOk = new Button();
 			buttonDuplicate = new Button();
 			buttonMoveUp = new Button();
 			buttonMoveDown = new Button();
+			checkBoxShowNotification = new CheckBox();
 			groupBoxProfile.SuspendLayout();
 			SuspendLayout();
 			// 
@@ -130,7 +131,7 @@
 			groupBoxProfile.Location = new Point(12, 197);
 			groupBoxProfile.Name = "groupBoxProfile";
 			groupBoxProfile.Size = new Size(882, 727);
-			groupBoxProfile.TabIndex = 3;
+			groupBoxProfile.TabIndex = 6;
 			groupBoxProfile.TabStop = false;
 			groupBoxProfile.Text = "キャプチャ設定";
 			// 
@@ -139,7 +140,7 @@
 			buttonKeyCapture.Location = new Point(395, 91);
 			buttonKeyCapture.Name = "buttonKeyCapture";
 			buttonKeyCapture.Size = new Size(125, 34);
-			buttonKeyCapture.TabIndex = 25;
+			buttonKeyCapture.TabIndex = 4;
 			buttonKeyCapture.Text = "キーキャプチャ";
 			buttonKeyCapture.UseVisualStyleBackColor = true;
 			buttonKeyCapture.Click += buttonKeyCapture_Click;
@@ -152,7 +153,7 @@
 			comboBoxTarget.Location = new Point(158, 185);
 			comboBoxTarget.Name = "comboBoxTarget";
 			comboBoxTarget.Size = new Size(281, 33);
-			comboBoxTarget.TabIndex = 24;
+			comboBoxTarget.TabIndex = 12;
 			// 
 			// label7
 			// 
@@ -160,28 +161,8 @@
 			label7.Location = new Point(19, 188);
 			label7.Name = "label7";
 			label7.Size = new Size(123, 25);
-			label7.TabIndex = 23;
+			label7.TabIndex = 11;
 			label7.Text = "キャプチャ対象 :";
-			// 
-			// buttonClearCounter
-			// 
-			buttonClearCounter.Location = new Point(251, 930);
-			buttonClearCounter.Name = "buttonClearCounter";
-			buttonClearCounter.Size = new Size(130, 34);
-			buttonClearCounter.TabIndex = 20;
-			buttonClearCounter.Text = "連番リセット";
-			buttonClearCounter.UseVisualStyleBackColor = true;
-			buttonClearCounter.Click += buttonClearCounter_Click;
-			// 
-			// checkBoxRememberNumber
-			// 
-			checkBoxRememberNumber.AutoSize = true;
-			checkBoxRememberNumber.Location = new Point(31, 934);
-			checkBoxRememberNumber.Name = "checkBoxRememberNumber";
-			checkBoxRememberNumber.Size = new Size(204, 29);
-			checkBoxRememberNumber.TabIndex = 19;
-			checkBoxRememberNumber.Text = "前回の連番を記憶する";
-			checkBoxRememberNumber.UseVisualStyleBackColor = true;
 			// 
 			// label6
 			// 
@@ -189,7 +170,7 @@
 			label6.Location = new Point(399, 140);
 			label6.Name = "label6";
 			label6.Size = new Size(121, 25);
-			label6.TabIndex = 8;
+			label6.TabIndex = 9;
 			label6.Text = "遅延時間(秒) :";
 			// 
 			// textBoxDelay
@@ -197,7 +178,7 @@
 			textBoxDelay.Location = new Point(528, 137);
 			textBoxDelay.Name = "textBoxDelay";
 			textBoxDelay.Size = new Size(93, 31);
-			textBoxDelay.TabIndex = 9;
+			textBoxDelay.TabIndex = 10;
 			// 
 			// checkBoxUseDelay
 			// 
@@ -205,7 +186,7 @@
 			checkBoxUseDelay.Location = new Point(158, 139);
 			checkBoxUseDelay.Name = "checkBoxUseDelay";
 			checkBoxUseDelay.Size = new Size(211, 29);
-			checkBoxUseDelay.TabIndex = 7;
+			checkBoxUseDelay.TabIndex = 8;
 			checkBoxUseDelay.Text = "遅延キャプチャ ON/OFF";
 			checkBoxUseDelay.UseVisualStyleBackColor = true;
 			// 
@@ -215,7 +196,7 @@
 			buttonApply.Location = new Point(764, 680);
 			buttonApply.Name = "buttonApply";
 			buttonApply.Size = new Size(112, 34);
-			buttonApply.TabIndex = 22;
+			buttonApply.TabIndex = 23;
 			buttonApply.Text = "適用";
 			buttonApply.UseVisualStyleBackColor = true;
 			buttonApply.Click += buttonApply_Click;
@@ -227,7 +208,7 @@
 			textBox1.Name = "textBox1";
 			textBox1.ReadOnly = true;
 			textBox1.Size = new Size(533, 212);
-			textBox1.TabIndex = 18;
+			textBox1.TabIndex = 21;
 			textBox1.TabStop = false;
 			textBox1.Text = resources.GetString("textBox1.Text");
 			// 
@@ -240,7 +221,7 @@
 			comboBoxFormat.Location = new Point(700, 384);
 			comboBoxFormat.Name = "comboBoxFormat";
 			comboBoxFormat.Size = new Size(163, 33);
-			comboBoxFormat.TabIndex = 17;
+			comboBoxFormat.TabIndex = 20;
 			// 
 			// label5
 			// 
@@ -249,7 +230,7 @@
 			label5.Location = new Point(581, 387);
 			label5.Name = "label5";
 			label5.Size = new Size(108, 25);
-			label5.TabIndex = 16;
+			label5.TabIndex = 19;
 			label5.Text = "ファイル型式 :";
 			// 
 			// textBoxFileName
@@ -258,7 +239,7 @@
 			textBoxFileName.Location = new Point(221, 384);
 			textBoxFileName.Name = "textBoxFileName";
 			textBoxFileName.Size = new Size(354, 31);
-			textBoxFileName.TabIndex = 15;
+			textBoxFileName.TabIndex = 18;
 			// 
 			// label4
 			// 
@@ -266,7 +247,7 @@
 			label4.Location = new Point(47, 387);
 			label4.Name = "label4";
 			label4.Size = new Size(168, 25);
-			label4.TabIndex = 14;
+			label4.TabIndex = 17;
 			label4.Text = "ファイル名テンプレート :";
 			// 
 			// buttonBrowse
@@ -275,7 +256,7 @@
 			buttonBrowse.Location = new Point(770, 320);
 			buttonBrowse.Name = "buttonBrowse";
 			buttonBrowse.Size = new Size(93, 34);
-			buttonBrowse.TabIndex = 13;
+			buttonBrowse.TabIndex = 16;
 			buttonBrowse.Text = "参照...";
 			buttonBrowse.UseVisualStyleBackColor = true;
 			buttonBrowse.Click += buttonBrowse_Click;
@@ -286,7 +267,7 @@
 			label3.Location = new Point(47, 325);
 			label3.Name = "label3";
 			label3.Size = new Size(152, 25);
-			label3.TabIndex = 11;
+			label3.TabIndex = 14;
 			label3.Text = "保存先ディレクトリ :";
 			// 
 			// textBoxSaveDir
@@ -295,7 +276,7 @@
 			textBoxSaveDir.Location = new Point(221, 322);
 			textBoxSaveDir.Name = "textBoxSaveDir";
 			textBoxSaveDir.Size = new Size(543, 31);
-			textBoxSaveDir.TabIndex = 12;
+			textBoxSaveDir.TabIndex = 15;
 			// 
 			// checkBoxClipboard
 			// 
@@ -303,7 +284,7 @@
 			checkBoxClipboard.Location = new Point(19, 679);
 			checkBoxClipboard.Name = "checkBoxClipboard";
 			checkBoxClipboard.Size = new Size(270, 29);
-			checkBoxClipboard.TabIndex = 21;
+			checkBoxClipboard.TabIndex = 22;
 			checkBoxClipboard.Text = "クリップボードへのコピー ON/OFF";
 			checkBoxClipboard.UseVisualStyleBackColor = true;
 			// 
@@ -313,7 +294,7 @@
 			checkBoxSaveFile.Location = new Point(19, 271);
 			checkBoxSaveFile.Name = "checkBoxSaveFile";
 			checkBoxSaveFile.Size = new Size(226, 29);
-			checkBoxSaveFile.TabIndex = 10;
+			checkBoxSaveFile.TabIndex = 13;
 			checkBoxSaveFile.Text = "ファイルへの保存 ON/OFF";
 			checkBoxSaveFile.UseVisualStyleBackColor = true;
 			// 
@@ -323,7 +304,7 @@
 			checkBoxAlt.Location = new Point(746, 95);
 			checkBoxAlt.Name = "checkBoxAlt";
 			checkBoxAlt.Size = new Size(60, 29);
-			checkBoxAlt.TabIndex = 6;
+			checkBoxAlt.TabIndex = 7;
 			checkBoxAlt.Text = "Alt";
 			checkBoxAlt.UseVisualStyleBackColor = true;
 			// 
@@ -333,7 +314,7 @@
 			checkBoxShift.Location = new Point(666, 95);
 			checkBoxShift.Name = "checkBoxShift";
 			checkBoxShift.Size = new Size(74, 29);
-			checkBoxShift.TabIndex = 5;
+			checkBoxShift.TabIndex = 6;
 			checkBoxShift.Text = "Shift";
 			checkBoxShift.UseVisualStyleBackColor = true;
 			// 
@@ -343,7 +324,7 @@
 			checkBoxCtrl.Location = new Point(595, 94);
 			checkBoxCtrl.Name = "checkBoxCtrl";
 			checkBoxCtrl.Size = new Size(65, 29);
-			checkBoxCtrl.TabIndex = 4;
+			checkBoxCtrl.TabIndex = 5;
 			checkBoxCtrl.Text = "Ctrl";
 			checkBoxCtrl.UseVisualStyleBackColor = true;
 			// 
@@ -380,13 +361,33 @@
 			label1.TabIndex = 2;
 			label1.Text = "ショートカットキー :";
 			// 
+			// buttonClearCounter
+			// 
+			buttonClearCounter.Location = new Point(241, 930);
+			buttonClearCounter.Name = "buttonClearCounter";
+			buttonClearCounter.Size = new Size(112, 34);
+			buttonClearCounter.TabIndex = 8;
+			buttonClearCounter.Text = "連番リセット";
+			buttonClearCounter.UseVisualStyleBackColor = true;
+			buttonClearCounter.Click += buttonClearCounter_Click;
+			// 
+			// checkBoxRememberNumber
+			// 
+			checkBoxRememberNumber.AutoSize = true;
+			checkBoxRememberNumber.Location = new Point(31, 934);
+			checkBoxRememberNumber.Name = "checkBoxRememberNumber";
+			checkBoxRememberNumber.Size = new Size(204, 29);
+			checkBoxRememberNumber.TabIndex = 7;
+			checkBoxRememberNumber.Text = "前回の連番を記憶する";
+			checkBoxRememberNumber.UseVisualStyleBackColor = true;
+			// 
 			// buttonCancel
 			// 
 			buttonCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
 			buttonCancel.Location = new Point(782, 930);
 			buttonCancel.Name = "buttonCancel";
 			buttonCancel.Size = new Size(112, 34);
-			buttonCancel.TabIndex = 5;
+			buttonCancel.TabIndex = 11;
 			buttonCancel.Text = "キャンセル";
 			buttonCancel.UseVisualStyleBackColor = true;
 			buttonCancel.Click += buttonCancel_Click;
@@ -397,7 +398,7 @@
 			buttonOk.Location = new Point(651, 930);
 			buttonOk.Name = "buttonOk";
 			buttonOk.Size = new Size(112, 34);
-			buttonOk.TabIndex = 4;
+			buttonOk.TabIndex = 10;
 			buttonOk.Text = "OK";
 			buttonOk.UseVisualStyleBackColor = true;
 			buttonOk.Click += buttonOK_Click;
@@ -408,7 +409,7 @@
 			buttonDuplicate.Location = new Point(782, 92);
 			buttonDuplicate.Name = "buttonDuplicate";
 			buttonDuplicate.Size = new Size(112, 34);
-			buttonDuplicate.TabIndex = 6;
+			buttonDuplicate.TabIndex = 3;
 			buttonDuplicate.Text = "複製";
 			buttonDuplicate.UseVisualStyleBackColor = true;
 			buttonDuplicate.Click += buttonDuplicate_Click;
@@ -419,7 +420,7 @@
 			buttonMoveUp.Location = new Point(782, 157);
 			buttonMoveUp.Name = "buttonMoveUp";
 			buttonMoveUp.Size = new Size(54, 34);
-			buttonMoveUp.TabIndex = 7;
+			buttonMoveUp.TabIndex = 4;
 			buttonMoveUp.Text = "↑";
 			buttonMoveUp.UseVisualStyleBackColor = true;
 			buttonMoveUp.Click += buttonMoveUp_Click;
@@ -430,16 +431,27 @@
 			buttonMoveDown.Location = new Point(840, 157);
 			buttonMoveDown.Name = "buttonMoveDown";
 			buttonMoveDown.Size = new Size(54, 34);
-			buttonMoveDown.TabIndex = 8;
+			buttonMoveDown.TabIndex = 5;
 			buttonMoveDown.Text = "↓";
 			buttonMoveDown.UseVisualStyleBackColor = true;
 			buttonMoveDown.Click += buttonMoveDown_Click;
+			// 
+			// checkBoxShowNotification
+			// 
+			checkBoxShowNotification.AutoSize = true;
+			checkBoxShowNotification.Location = new Point(386, 934);
+			checkBoxShowNotification.Name = "checkBoxShowNotification";
+			checkBoxShowNotification.Size = new Size(201, 29);
+			checkBoxShowNotification.TabIndex = 9;
+			checkBoxShowNotification.Text = "キャプチャ時に通知する";
+			checkBoxShowNotification.UseVisualStyleBackColor = true;
 			// 
 			// FormSettings
 			// 
 			AutoScaleDimensions = new SizeF(10F, 25F);
 			AutoScaleMode = AutoScaleMode.Font;
 			ClientSize = new Size(906, 976);
+			Controls.Add(checkBoxShowNotification);
 			Controls.Add(buttonMoveDown);
 			Controls.Add(buttonMoveUp);
 			Controls.Add(buttonDuplicate);
@@ -498,5 +510,6 @@
 		private Button buttonMoveUp;
 		private Button buttonMoveDown;
 		private Button buttonKeyCapture;
+		private CheckBox checkBoxShowNotification;
 	}
 }

@@ -101,6 +101,7 @@ namespace WowShot2
 			int number = settingsManager.GlobalLastUsedNumber;
 			string fileName = ApplyFileNameTemplate(profile.FileNameTemplate, number, DateTime.Now);
 			string ext = profile.FileFormat.ToLower();
+			string savedFileName = fileName;
 
 			// ファイル保存
 			if (profile.SaveToFile)
@@ -113,14 +114,36 @@ namespace WowShot2
 				Directory.CreateDirectory(saveDir); // 存在しなければ作成
 
 				//string fullPath = Path.Combine(profile.SaveDirectory, $"{fileName}.{ext}");
-				string fullPath = Path.Combine(saveDir, $"{fileName}.{ext}");
+				//string fullPath = Path.Combine(saveDir, $"{fileName}.{ext}");
 
+				//captured.Save(fullPath, ext switch
+				//{
+				//	"jpg" => ImageFormat.Jpeg,
+				//	"bmp" => ImageFormat.Bmp,
+				//	_ => ImageFormat.Png
+				//});
+
+				string baseFileName = $"{fileName}.{ext}";
+				string fullPath = Path.Combine(saveDir, baseFileName);
+
+				// 上書きを避けるためのファイル名補正処理
+				int count = 1;
+				while (File.Exists(fullPath))
+				{
+					string numberedFileName = $"{fileName}_{count}.{ext}";
+					fullPath = Path.Combine(saveDir, numberedFileName);
+					count++;
+				}
+
+				// 保存
 				captured.Save(fullPath, ext switch
 				{
 					"jpg" => ImageFormat.Jpeg,
 					"bmp" => ImageFormat.Bmp,
 					_ => ImageFormat.Png
 				});
+
+				savedFileName = Path.GetFileName(fullPath); // 保存したファイル名を取得
 			}
 
 			// クリップボードにコピー
@@ -143,7 +166,10 @@ namespace WowShot2
 			//	settingsManager.Save(); // JSONへ保存
 			//}
 
-			trayIcon.ShowBalloonTip(1000, "キャプチャ完了", $"{fileName}.{ext} を保存しました", ToolTipIcon.Info);
+			if (settingsManager.ShowCaptureNotification)
+			{
+				trayIcon.ShowBalloonTip(1000, "キャプチャ完了", $"{savedFileName} を保存しました", ToolTipIcon.Info);
+			}
 		}
 
 		private bool TryCaptureDisplay(string target, out Bitmap? bitmap)

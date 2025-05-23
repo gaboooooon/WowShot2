@@ -12,6 +12,7 @@ namespace WowShot2
 	{
 		public int GlobalLastUsedNumber { get; set; } = 1;
 		public bool RememberGlobalLastUsedNumber { get; set; } = false;
+		public bool ShowCaptureNotification { get; set; } = true;
 
 		public List<CaptureShortcutProfile> Profiles { get; set; } = new();
 
