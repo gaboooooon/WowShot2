@@ -149,48 +149,52 @@ namespace WowShot2
 			return bitmap;
 		}
 
-		public static Bitmap CapturePhysicalScreen(int screenIndex)
-		{
-			var monitors = GetAllMonitors();
+		// ※CapturePhysicalScreen()は、DWMを使用せずに物理的なスクリーンをキャプチャするためのものです。
+		//   .Net 6以降では、DWMを使用せずに物理的なスクリーンをキャプチャする方法が提供されているため、
+		//   CapturePhysicalScreen()は必要ないかもしれません。
 
-			if (screenIndex < 0 || screenIndex >= monitors.Count)
-				throw new ArgumentOutOfRangeException(nameof(screenIndex));
+		//public static Bitmap CapturePhysicalScreen(int screenIndex)
+		//{
+		//	var monitors = GetAllMonitors();
 
-			var bounds = monitors[screenIndex];
+		//	if (screenIndex < 0 || screenIndex >= monitors.Count)
+		//		throw new ArgumentOutOfRangeException(nameof(screenIndex));
 
-			Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height);
+		//	var bounds = monitors[screenIndex];
 
-			using (Graphics g = Graphics.FromImage(bitmap))
-			{
-				g.CopyFromScreen(bounds.Location, Point.Empty, bounds.Size);
-			}
+		//	Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height);
 
-			return bitmap;
-		}
+		//	using (Graphics g = Graphics.FromImage(bitmap))
+		//	{
+		//		g.CopyFromScreen(bounds.Location, Point.Empty, bounds.Size);
+		//	}
 
-		public static List<Rectangle> GetAllMonitors()
-		{
-			List<Rectangle> monitorRects = new List<Rectangle>();
+		//	return bitmap;
+		//}
 
-			bool MonitorEnum(IntPtr hMonitor, IntPtr hdc, ref RECT lprcMonitor, IntPtr dwData)
-			{
-				Rectangle bounds = new Rectangle(
-					lprcMonitor.Left,
-					lprcMonitor.Top,
-					lprcMonitor.Right - lprcMonitor.Left,
-					lprcMonitor.Bottom - lprcMonitor.Top
-				);
-				monitorRects.Add(bounds);
-				return true;
-			}
+		//public static List<Rectangle> GetAllMonitors()
+		//{
+		//	List<Rectangle> monitorRects = new List<Rectangle>();
 
-			EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero, MonitorEnum, IntPtr.Zero);
-			return monitorRects;
-		}
+		//	bool MonitorEnum(IntPtr hMonitor, IntPtr hdc, ref RECT lprcMonitor, IntPtr dwData)
+		//	{
+		//		Rectangle bounds = new Rectangle(
+		//			lprcMonitor.Left,
+		//			lprcMonitor.Top,
+		//			lprcMonitor.Right - lprcMonitor.Left,
+		//			lprcMonitor.Bottom - lprcMonitor.Top
+		//		);
+		//		monitorRects.Add(bounds);
+		//		return true;
+		//	}
 
-		private delegate bool MonitorEnumProc(IntPtr hMonitor, IntPtr hdcMonitor, ref RECT lprcMonitor, IntPtr dwData);
+		//	EnumDisplayMonitors(IntPtr.Zero, IntPtr.Zero, MonitorEnum, IntPtr.Zero);
+		//	return monitorRects;
+		//}
 
-		[DllImport("user32.dll")]
-		private static extern bool EnumDisplayMonitors(IntPtr hdc, IntPtr lprcClip, MonitorEnumProc lpfnEnum, IntPtr dwData);
+		//private delegate bool MonitorEnumProc(IntPtr hMonitor, IntPtr hdcMonitor, ref RECT lprcMonitor, IntPtr dwData);
+
+		//[DllImport("user32.dll")]
+		//private static extern bool EnumDisplayMonitors(IntPtr hdc, IntPtr lprcClip, MonitorEnumProc lpfnEnum, IntPtr dwData);
 	}
 }
