@@ -33,6 +33,7 @@
 			buttonAdd = new Button();
 			buttonDelete = new Button();
 			groupBoxProfile = new GroupBox();
+			buttonKeyCapture = new Button();
 			comboBoxTarget = new ComboBox();
 			label7 = new Label();
 			buttonClearCounter = new Button();
@@ -102,6 +103,7 @@
 			// groupBoxProfile
 			// 
 			groupBoxProfile.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+			groupBoxProfile.Controls.Add(buttonKeyCapture);
 			groupBoxProfile.Controls.Add(comboBoxTarget);
 			groupBoxProfile.Controls.Add(label7);
 			groupBoxProfile.Controls.Add(buttonClearCounter);
@@ -133,6 +135,16 @@
 			groupBoxProfile.TabIndex = 3;
 			groupBoxProfile.TabStop = false;
 			groupBoxProfile.Text = "キャプチャ設定";
+			// 
+			// buttonKeyCapture
+			// 
+			buttonKeyCapture.Location = new Point(395, 91);
+			buttonKeyCapture.Name = "buttonKeyCapture";
+			buttonKeyCapture.Size = new Size(125, 34);
+			buttonKeyCapture.TabIndex = 25;
+			buttonKeyCapture.Text = "キーキャプチャ";
+			buttonKeyCapture.UseVisualStyleBackColor = true;
+			buttonKeyCapture.Click += buttonKeyCapture_Click;
 			// 
 			// comboBoxTarget
 			// 
@@ -310,7 +322,7 @@
 			// checkBoxAlt
 			// 
 			checkBoxAlt.AutoSize = true;
-			checkBoxAlt.Location = new Point(488, 96);
+			checkBoxAlt.Location = new Point(746, 95);
 			checkBoxAlt.Name = "checkBoxAlt";
 			checkBoxAlt.Size = new Size(60, 29);
 			checkBoxAlt.TabIndex = 6;
@@ -320,7 +332,7 @@
 			// checkBoxShift
 			// 
 			checkBoxShift.AutoSize = true;
-			checkBoxShift.Location = new Point(408, 96);
+			checkBoxShift.Location = new Point(666, 95);
 			checkBoxShift.Name = "checkBoxShift";
 			checkBoxShift.Size = new Size(74, 29);
 			checkBoxShift.TabIndex = 5;
@@ -330,7 +342,7 @@
 			// checkBoxCtrl
 			// 
 			checkBoxCtrl.AutoSize = true;
-			checkBoxCtrl.Location = new Point(337, 95);
+			checkBoxCtrl.Location = new Point(595, 94);
 			checkBoxCtrl.Name = "checkBoxCtrl";
 			checkBoxCtrl.Size = new Size(65, 29);
 			checkBoxCtrl.TabIndex = 4;
@@ -350,7 +362,7 @@
 			// 
 			textBoxKey.Location = new Point(158, 93);
 			textBoxKey.Name = "textBoxKey";
-			textBoxKey.Size = new Size(150, 31);
+			textBoxKey.Size = new Size(231, 31);
 			textBoxKey.TabIndex = 3;
 			// 
 			// textBoxProfileName
@@ -442,6 +454,7 @@
 			Name = "FormSettings";
 			Text = "WowShot2設定";
 			Load += FormSetting_Load;
+			KeyDown += FormSetting_KeyDown;
 			groupBoxProfile.ResumeLayout(false);
 			groupBoxProfile.PerformLayout();
 			ResumeLayout(false);
@@ -483,5 +496,6 @@
 		private Button buttonDuplicate;
 		private Button buttonMoveUp;
 		private Button buttonMoveDown;
+		private Button buttonKeyCapture;
 	}
 }
