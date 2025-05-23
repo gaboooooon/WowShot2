@@ -66,31 +66,6 @@ namespace WowShot2
 				hotKeyManagers.Add(manager);
 			}
 
-			//var registered = new HashSet<string>();
-
-			//foreach (var profile in settingsManager.Profiles)
-			//{
-			//	if (profile.Key == Keys.None) continue;
-
-			//	int modifiers = 0;
-			//	if (profile.UseCtrl) modifiers |= (int)HotKeyManager.Modifiers.Control;
-			//	if (profile.UseShift) modifiers |= (int)HotKeyManager.Modifiers.Shift;
-			//	if (profile.UseAlt) modifiers |= (int)HotKeyManager.Modifiers.Alt;
-
-			//	// キー＋修飾子の文字列で一意化
-			//	string signature = $"{(Keys)modifiers}+{profile.Key}";
-			//	if (registered.Contains(signature))
-			//		continue;
-
-			//	registered.Add(signature);
-
-			//	var manager = new HotKeyManager(dummyForm, profile.Key, (HotKeyManager.Modifiers)modifiers);
-			//	var boundProfile = profile;
-			//	manager.HotKeyPressed += (s, e) => PerformCapture(boundProfile);
-
-			//	hotKeyManagers.Add(manager);
-			//}
-
 			dummyForm.Load += (s, e) => dummyForm.Hide();
 			dummyForm.Show();
 		}
@@ -249,24 +224,6 @@ namespace WowShot2
 			hotKeyManagers.Clear();
 
 			settingsManager = newManager;
-
-			//foreach (var profile in settingsManager.Profiles)
-			//{
-			//	if (profile.Key == Keys.None) continue;
-
-			//	int modifiers = 0;
-			//	if (profile.UseCtrl) modifiers |= (int)HotKeyManager.Modifiers.Control;
-			//	if (profile.UseShift) modifiers |= (int)HotKeyManager.Modifiers.Shift;
-			//	if (profile.UseAlt) modifiers |= (int)HotKeyManager.Modifiers.Alt;
-
-			//	var manager = new HotKeyManager(dummyForm, profile.Key, (HotKeyManager.Modifiers)modifiers);
-
-			//	// 🔧 ローカル変数に代入してクロージャを分離
-			//	var boundProfile = profile;
-			//	manager.HotKeyPressed += (s, e) => PerformCapture(boundProfile);
-
-			//	hotKeyManagers.Add(manager);
-			//}
 
 			int hotKeyIdCounter = 1;
 

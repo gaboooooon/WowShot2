@@ -27,11 +27,6 @@ namespace WowShot2
 			trayAppContext = context;
 		}
 
-		//public FormSettings()
-		//{
-		//	InitializeComponent();
-		//}
-
 		private void FormSetting_Load(object sender, EventArgs e)
 		{
 			settingsManager = CaptureSettingsManager.Load();
@@ -106,6 +101,7 @@ namespace WowShot2
 			capturedKey = e.KeyCode;
 			textBoxKey.Text = e.KeyCode.ToString();
 
+			// ※キーキャプチャは修飾キーは対象にしない（※修飾キーはチェックボックスで設定してもらう）
 			//checkBoxCtrl.Checked = e.Control;
 			//checkBoxShift.Checked = e.Shift;
 			//checkBoxAlt.Checked = e.Alt;

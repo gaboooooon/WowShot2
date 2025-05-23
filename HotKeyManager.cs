@@ -9,7 +9,7 @@ namespace WowShot2
 		public event EventHandler HotKeyPressed;
 
 		private const int WM_HOTKEY = 0x0312;
-		//private int hotkeyId;
+
 		public int HotKeyId { get; private set; }
 
 		[DllImport("user32.dll")]
@@ -39,7 +39,6 @@ namespace WowShot2
 			{
 				MessageBox.Show("ホットキーの登録に失敗しました", "エラー");
 			}
-
 		}
 
 		protected override void WndProc(ref Message m)
