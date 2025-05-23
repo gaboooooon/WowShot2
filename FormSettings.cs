@@ -19,10 +19,18 @@ namespace WowShot2
 		private bool isCapturingKey = false;
 		private Keys capturedKey = Keys.None;
 
-		public FormSettings()
+		private TrayAppContext trayAppContext;
+
+		public FormSettings(TrayAppContext context)
 		{
 			InitializeComponent();
+			trayAppContext = context;
 		}
+
+		//public FormSettings()
+		//{
+		//	InitializeComponent();
+		//}
 
 		private void FormSetting_Load(object sender, EventArgs e)
 		{
@@ -364,6 +372,7 @@ namespace WowShot2
 			}
 
 			settingsManager.Save();
+			trayAppContext.ReRegisterHotKeys(settingsManager); // ← 再登録を通知
 
 			MessageBox.Show("設定を保存しました。", "情報", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}

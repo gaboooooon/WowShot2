@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -45,17 +46,50 @@ namespace WowShot2
 
 			settingsManager = CaptureSettingsManager.Load();
 
+			int hotKeyIdCounter = 1;
+
 			foreach (var profile in settingsManager.Profiles)
 			{
+				if (profile.Key == Keys.None) continue;
+
 				int modifiers = 0;
 				if (profile.UseCtrl) modifiers |= (int)HotKeyManager.Modifiers.Control;
 				if (profile.UseShift) modifiers |= (int)HotKeyManager.Modifiers.Shift;
 				if (profile.UseAlt) modifiers |= (int)HotKeyManager.Modifiers.Alt;
 
-				var manager = new HotKeyManager(dummyForm, profile.Key, (HotKeyManager.Modifiers)modifiers);
-				manager.HotKeyPressed += (s, e) => PerformCapture(profile);
+				// 🔧 HotKeyId をユニークにする
+				var manager = new HotKeyManager(dummyForm, profile.Key, (HotKeyManager.Modifiers)modifiers, id: hotKeyIdCounter++);
+
+				var boundProfile = profile;
+				manager.HotKeyPressed += (s, e) => PerformCapture(boundProfile);
+
 				hotKeyManagers.Add(manager);
 			}
+
+			//var registered = new HashSet<string>();
+
+			//foreach (var profile in settingsManager.Profiles)
+			//{
+			//	if (profile.Key == Keys.None) continue;
+
+			//	int modifiers = 0;
+			//	if (profile.UseCtrl) modifiers |= (int)HotKeyManager.Modifiers.Control;
+			//	if (profile.UseShift) modifiers |= (int)HotKeyManager.Modifiers.Shift;
+			//	if (profile.UseAlt) modifiers |= (int)HotKeyManager.Modifiers.Alt;
+
+			//	// キー＋修飾子の文字列で一意化
+			//	string signature = $"{(Keys)modifiers}+{profile.Key}";
+			//	if (registered.Contains(signature))
+			//		continue;
+
+			//	registered.Add(signature);
+
+			//	var manager = new HotKeyManager(dummyForm, profile.Key, (HotKeyManager.Modifiers)modifiers);
+			//	var boundProfile = profile;
+			//	manager.HotKeyPressed += (s, e) => PerformCapture(boundProfile);
+
+			//	hotKeyManagers.Add(manager);
+			//}
 
 			dummyForm.Load += (s, e) => dummyForm.Hide();
 			dummyForm.Show();
@@ -63,6 +97,8 @@ namespace WowShot2
 
 		private async void PerformCapture(CaptureShortcutProfile profile)
 		{
+			Debug.WriteLine($"PerformCapture(): {profile.ProfileName}, {profile.CaptureTarget}");
+
 			// 遅延キャプチャ
 			if (profile.UseDelay && profile.DelaySeconds > 0)
 			{
@@ -145,7 +181,8 @@ namespace WowShot2
 
 		private void ShowSettingForm()
 		{
-			var settingForm = new FormSettings();
+			//var settingForm = new FormSettings();
+			var settingForm = new FormSettings(this);
 
 			if (lastSettingFormLocation == null)
 			{
@@ -199,6 +236,57 @@ namespace WowShot2
 				.Replace("%ss", now.ToString("ss"));
 
 			return fileName;
+		}
+
+		public void ReRegisterHotKeys(CaptureSettingsManager newManager)
+		{
+			// 既存ホットキー解除
+			foreach (var manager in hotKeyManagers)
+			{
+				manager.Dispose();
+			}
+
+			hotKeyManagers.Clear();
+
+			settingsManager = newManager;
+
+			//foreach (var profile in settingsManager.Profiles)
+			//{
+			//	if (profile.Key == Keys.None) continue;
+
+			//	int modifiers = 0;
+			//	if (profile.UseCtrl) modifiers |= (int)HotKeyManager.Modifiers.Control;
+			//	if (profile.UseShift) modifiers |= (int)HotKeyManager.Modifiers.Shift;
+			//	if (profile.UseAlt) modifiers |= (int)HotKeyManager.Modifiers.Alt;
+
+			//	var manager = new HotKeyManager(dummyForm, profile.Key, (HotKeyManager.Modifiers)modifiers);
+
+			//	// 🔧 ローカル変数に代入してクロージャを分離
+			//	var boundProfile = profile;
+			//	manager.HotKeyPressed += (s, e) => PerformCapture(boundProfile);
+
+			//	hotKeyManagers.Add(manager);
+			//}
+
+			int hotKeyIdCounter = 1;
+
+			foreach (var profile in settingsManager.Profiles)
+			{
+				if (profile.Key == Keys.None) continue;
+
+				int modifiers = 0;
+				if (profile.UseCtrl) modifiers |= (int)HotKeyManager.Modifiers.Control;
+				if (profile.UseShift) modifiers |= (int)HotKeyManager.Modifiers.Shift;
+				if (profile.UseAlt) modifiers |= (int)HotKeyManager.Modifiers.Alt;
+
+				// 🔧 HotKeyId をユニークにする
+				var manager = new HotKeyManager(dummyForm, profile.Key, (HotKeyManager.Modifiers)modifiers, id: hotKeyIdCounter++);
+
+				var boundProfile = profile;
+				manager.HotKeyPressed += (s, e) => PerformCapture(boundProfile);
+
+				hotKeyManagers.Add(manager);
+			}
 		}
 	}
 }
