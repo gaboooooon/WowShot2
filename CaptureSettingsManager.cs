@@ -10,6 +10,9 @@ namespace WowShot2
 {
 	public class CaptureSettingsManager
 	{
+		public int GlobalLastUsedNumber { get; set; } = 1;
+		public bool RememberGlobalLastUsedNumber { get; set; } = false;
+
 		public List<CaptureShortcutProfile> Profiles { get; set; } = new();
 
 		private static string ConfigPath => Path.Combine(AppContext.BaseDirectory, "profiles.json");

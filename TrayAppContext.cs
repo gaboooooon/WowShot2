@@ -98,7 +98,8 @@ namespace WowShot2
 			}
 
 			// ファイル名生成
-			string fileName = ApplyFileNameTemplate(profile.FileNameTemplate, profile.LastUsedNumber, DateTime.Now);
+			int number = settingsManager.GlobalLastUsedNumber;
+			string fileName = ApplyFileNameTemplate(profile.FileNameTemplate, number, DateTime.Now);
 			string ext = profile.FileFormat.ToLower();
 
 			// ファイル保存
@@ -129,11 +130,18 @@ namespace WowShot2
 			}
 
 			// 連番更新
-			if (profile.RememberLastNumber)
+			if (settingsManager.RememberGlobalLastUsedNumber)
 			{
-				profile.LastUsedNumber++;
-				settingsManager.Save(); // JSONへ保存
+				settingsManager.GlobalLastUsedNumber++;
+				settingsManager.Save();
 			}
+
+			//// 連番更新
+			//if (profile.RememberLastNumber)
+			//{
+			//	profile.LastUsedNumber++;
+			//	settingsManager.Save(); // JSONへ保存
+			//}
 
 			trayIcon.ShowBalloonTip(1000, "キャプチャ完了", $"{fileName}.{ext} を保存しました", ToolTipIcon.Info);
 		}

@@ -26,11 +26,11 @@ namespace WowShot2
 		public string FileNameTemplate { get; set; } = "WS%NNNNNN_%YYYY%MM%DD_%hh%mm%ss";
 		public string FileFormat { get; set; } = "png";
 
-		public bool RememberLastNumber { get; set; } = false;
+		//public bool RememberLastNumber { get; set; } = false;
 
 		public bool CopyToClipboard { get; set; } = true;
 
-		public int LastUsedNumber { get; set; } = 0;
+		//public int LastUsedNumber { get; set; } = 0;
 
 		[JsonIgnore]
 		public int NumberDigitCount

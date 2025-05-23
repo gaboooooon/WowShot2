@@ -106,8 +106,6 @@
 			groupBoxProfile.Controls.Add(buttonKeyCapture);
 			groupBoxProfile.Controls.Add(comboBoxTarget);
 			groupBoxProfile.Controls.Add(label7);
-			groupBoxProfile.Controls.Add(buttonClearCounter);
-			groupBoxProfile.Controls.Add(checkBoxRememberNumber);
 			groupBoxProfile.Controls.Add(label6);
 			groupBoxProfile.Controls.Add(textBoxDelay);
 			groupBoxProfile.Controls.Add(checkBoxUseDelay);
@@ -167,22 +165,22 @@
 			// 
 			// buttonClearCounter
 			// 
-			buttonClearCounter.Location = new Point(797, 436);
+			buttonClearCounter.Location = new Point(251, 930);
 			buttonClearCounter.Name = "buttonClearCounter";
-			buttonClearCounter.Size = new Size(66, 34);
+			buttonClearCounter.Size = new Size(130, 34);
 			buttonClearCounter.TabIndex = 20;
-			buttonClearCounter.Text = "クリア";
+			buttonClearCounter.Text = "連番リセット";
 			buttonClearCounter.UseVisualStyleBackColor = true;
 			buttonClearCounter.Click += buttonClearCounter_Click;
 			// 
 			// checkBoxRememberNumber
 			// 
 			checkBoxRememberNumber.AutoSize = true;
-			checkBoxRememberNumber.Location = new Point(598, 441);
+			checkBoxRememberNumber.Location = new Point(31, 934);
 			checkBoxRememberNumber.Name = "checkBoxRememberNumber";
-			checkBoxRememberNumber.Size = new Size(175, 29);
+			checkBoxRememberNumber.Size = new Size(204, 29);
 			checkBoxRememberNumber.TabIndex = 19;
-			checkBoxRememberNumber.Text = "前回の番号を記憶";
+			checkBoxRememberNumber.Text = "前回の連番を記憶する";
 			checkBoxRememberNumber.UseVisualStyleBackColor = true;
 			// 
 			// label6
@@ -445,6 +443,8 @@
 			Controls.Add(buttonMoveDown);
 			Controls.Add(buttonMoveUp);
 			Controls.Add(buttonDuplicate);
+			Controls.Add(buttonClearCounter);
+			Controls.Add(checkBoxRememberNumber);
 			Controls.Add(buttonOk);
 			Controls.Add(buttonCancel);
 			Controls.Add(groupBoxProfile);
@@ -458,6 +458,7 @@
 			groupBoxProfile.ResumeLayout(false);
 			groupBoxProfile.PerformLayout();
 			ResumeLayout(false);
+			PerformLayout();
 		}
 
 		#endregion

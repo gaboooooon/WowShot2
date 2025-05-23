@@ -61,6 +61,8 @@ namespace WowShot2
 			});
 			comboBoxTarget.DropDownStyle = ComboBoxStyle.DropDownList;
 			comboBoxTarget.SelectedIndex = 2; // デフォルト：全ディスプレイ
+
+			checkBoxRememberNumber.Checked = settingsManager.RememberGlobalLastUsedNumber;
 		}
 
 		private void buttonKeyCapture_Click(object sender, EventArgs e)
@@ -139,7 +141,7 @@ namespace WowShot2
 				textBoxSaveDir.Text != selectedProfile.SaveDirectory ||
 				textBoxFileName.Text != selectedProfile.FileNameTemplate ||
 				comboBoxFormat.Text != selectedProfile.FileFormat ||
-				checkBoxRememberNumber.Checked != selectedProfile.RememberLastNumber ||
+				//checkBoxRememberNumber.Checked != selectedProfile.RememberLastNumber ||
 				checkBoxClipboard.Checked != selectedProfile.CopyToClipboard;
 		}
 
@@ -189,7 +191,7 @@ namespace WowShot2
 			textBoxFileName.Text = profile.FileNameTemplate;
 			comboBoxFormat.Text = profile.FileFormat;
 
-			checkBoxRememberNumber.Checked = profile.RememberLastNumber;
+			//checkBoxRememberNumber.Checked = profile.RememberLastNumber;
 
 			checkBoxClipboard.Checked = profile.CopyToClipboard;
 		}
@@ -243,7 +245,7 @@ namespace WowShot2
 			textBoxFileName.Text = "";
 			comboBoxFormat.SelectedIndex = -1;
 
-			checkBoxRememberNumber.Checked = false;
+			//checkBoxRememberNumber.Checked = false;
 			checkBoxClipboard.Checked = false;
 		}
 
@@ -355,7 +357,7 @@ namespace WowShot2
 			selectedProfile.FileNameTemplate = textBoxFileName.Text;
 			selectedProfile.FileFormat = comboBoxFormat.Text;
 
-			selectedProfile.RememberLastNumber = checkBoxRememberNumber.Checked;
+			//selectedProfile.RememberLastNumber = checkBoxRememberNumber.Checked;
 			selectedProfile.CopyToClipboard = checkBoxClipboard.Checked;
 
 			listBoxProfile.Items[listBoxProfile.SelectedIndex] = selectedProfile.ProfileName;
@@ -388,17 +390,27 @@ namespace WowShot2
 				p.UseAlt == targetProfile.UseAlt);
 		}
 
+		//private void buttonClearCounter_Click(object sender, EventArgs e)
+		//{
+		//	if (selectedProfile == null) return;
+
+		//	selectedProfile.LastUsedNumber = 0;
+		//	settingsManager.Save();
+		//	MessageBox.Show("連番を初期化しました。", "情報", MessageBoxButtons.OK, MessageBoxIcon.Information);
+		//}
+
 		private void buttonClearCounter_Click(object sender, EventArgs e)
 		{
-			if (selectedProfile == null) return;
-
-			selectedProfile.LastUsedNumber = 0;
+			settingsManager.GlobalLastUsedNumber = 1;
 			settingsManager.Save();
+
 			MessageBox.Show("連番を初期化しました。", "情報", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 
 		private void buttonOK_Click(object sender, EventArgs e)
 		{
+			settingsManager.RememberGlobalLastUsedNumber = checkBoxRememberNumber.Checked;
+
 			buttonApply_Click(sender, e); // 保存処理
 			this.Close();
 		}
