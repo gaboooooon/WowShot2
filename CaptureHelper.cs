@@ -108,20 +108,51 @@ namespace WowShot2
 			return bitmap;
 		}
 
+		//public static Bitmap? CaptureSelectedRegion()
+		//{
+		//	using FormRegionSelector selector = new FormRegionSelector();
+		//	if (selector.ShowDialog() == DialogResult.OK)
+		//	{
+		//		Rectangle region = selector.SelectedRegion;
+		//		if (region.Width == 0 || region.Height == 0)
+		//			throw new InvalidOperationException("範囲が無効です。");
+
+		//		Bitmap bitmap = new Bitmap(region.Width, region.Height);
+
+		//		using (Graphics g = Graphics.FromImage(bitmap))
+		//		{
+		//			g.CopyFromScreen(region.Location, Point.Empty, region.Size);
+		//		}
+
+		//		return bitmap;
+		//	}
+
+		//	return null;
+		//}
+
 		public static Bitmap? CaptureSelectedRegion()
 		{
 			using FormRegionSelector selector = new FormRegionSelector();
 			if (selector.ShowDialog() == DialogResult.OK)
 			{
 				Rectangle region = selector.SelectedRegion;
+
 				if (region.Width == 0 || region.Height == 0)
 					throw new InvalidOperationException("範囲が無効です。");
 
-				Bitmap bitmap = new Bitmap(region.Width, region.Height);
+				// ✅ 選択範囲の座標を「仮想スクリーン左上」基準に補正
+				Rectangle screenRegion = new Rectangle(
+					region.Left + SystemInformation.VirtualScreen.Left,
+					region.Top + SystemInformation.VirtualScreen.Top,
+					region.Width,
+					region.Height
+				);
+
+				Bitmap bitmap = new Bitmap(screenRegion.Width, screenRegion.Height);
 
 				using (Graphics g = Graphics.FromImage(bitmap))
 				{
-					g.CopyFromScreen(region.Location, Point.Empty, region.Size);
+					g.CopyFromScreen(screenRegion.Location, Point.Empty, screenRegion.Size);
 				}
 
 				return bitmap;

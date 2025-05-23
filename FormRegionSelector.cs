@@ -10,14 +10,96 @@ public class FormRegionSelector : Form
 	private Point endPoint;
 	private bool dragging = false;
 
+	//public FormRegionSelector()
+	//{
+	//	this.FormBorderStyle = FormBorderStyle.None;
+	//	this.Bounds = SystemInformation.VirtualScreen;
+	//	this.DoubleBuffered = true;
+	//	this.TopMost = true;
+	//	this.Opacity = 0.3;
+	//	this.BackColor = Color.Black;
+	//	this.Cursor = Cursors.Cross;
+
+	//	this.MouseDown += (s, e) =>
+	//	{
+	//		dragging = true;
+	//		startPoint = e.Location;
+	//		endPoint = e.Location;
+	//		Invalidate();
+	//	};
+
+	//	this.MouseMove += (s, e) =>
+	//	{
+	//		if (dragging)
+	//		{
+	//			endPoint = e.Location;
+	//			Invalidate();
+	//		}
+	//	};
+
+	//	this.MouseUp += (s, e) =>
+	//	{
+	//		dragging = false;
+	//		SelectedRegion = GetRectangle(startPoint, endPoint);
+	//		DialogResult = DialogResult.OK;
+	//		Close();
+	//	};
+	//}
+
+	//public FormRegionSelector()
+	//{
+	//	this.FormBorderStyle = FormBorderStyle.None;
+
+	//	// ✅ 全ディスプレイ領域を対象に
+	//	this.Bounds = SystemInformation.VirtualScreen;
+
+	//	this.DoubleBuffered = true;
+	//	this.TopMost = true;
+	//	this.Opacity = 0.3;
+	//	this.BackColor = Color.Black;
+	//	this.ShowInTaskbar = false;
+	//	this.Cursor = Cursors.Cross;
+
+	//	this.MouseDown += (s, e) =>
+	//	{
+	//		dragging = true;
+	//		startPoint = e.Location;
+	//		endPoint = e.Location;
+	//		Invalidate();
+	//	};
+
+	//	this.MouseMove += (s, e) =>
+	//	{
+	//		if (dragging)
+	//		{
+	//			endPoint = e.Location;
+	//			Invalidate();
+	//		}
+	//	};
+
+	//	this.MouseUp += (s, e) =>
+	//	{
+	//		dragging = false;
+	//		SelectedRegion = GetRectangle(startPoint, endPoint);
+	//		DialogResult = DialogResult.OK;
+	//		Close();
+	//	};
+	//}
+
 	public FormRegionSelector()
 	{
 		this.FormBorderStyle = FormBorderStyle.None;
-		this.Bounds = SystemInformation.VirtualScreen;
+		this.StartPosition = FormStartPosition.Manual;
+
+		// ✅ 全ディスプレイをカバーする領域に表示
+		this.Location = SystemInformation.VirtualScreen.Location;
+		this.Size = SystemInformation.VirtualScreen.Size;
+
 		this.DoubleBuffered = true;
 		this.TopMost = true;
 		this.Opacity = 0.3;
 		this.BackColor = Color.Black;
+		this.ShowInTaskbar = false;
 		this.Cursor = Cursors.Cross;
 
 		this.MouseDown += (s, e) =>
@@ -50,7 +132,7 @@ public class FormRegionSelector : Form
 	{
 		if (dragging)
 		{
-			using Pen pen = new Pen(Color.Red, 2);
+			using Pen pen = new Pen(Color.Green, 4);
 			e.Graphics.DrawRectangle(pen, GetRectangle(startPoint, endPoint));
 		}
 	}
