@@ -14,15 +14,6 @@ namespace WowShot2
 
 		private static string ConfigPath => Path.Combine(AppContext.BaseDirectory, "profiles.json");
 
-		//public void Save()
-		//{
-		//	var json = JsonSerializer.Serialize(this, new JsonSerializerOptions
-		//	{
-		//		WriteIndented = true
-		//	});
-		//	File.WriteAllText(ConfigPath, json);
-		//}
-
 		public void Save()
 		{
 			var options = new JsonSerializerOptions
