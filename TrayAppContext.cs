@@ -57,7 +57,6 @@ namespace WowShot2
 				if (profile.UseShift) modifiers |= (int)HotKeyManager.Modifiers.Shift;
 				if (profile.UseAlt) modifiers |= (int)HotKeyManager.Modifiers.Alt;
 
-				// 🔧 HotKeyId をユニークにする
 				var manager = new HotKeyManager(dummyForm, profile.Key, (HotKeyManager.Modifiers)modifiers, id: hotKeyIdCounter++);
 
 				var boundProfile = profile;
@@ -72,8 +71,6 @@ namespace WowShot2
 
 		private async void PerformCapture(CaptureShortcutProfile profile)
 		{
-			Debug.WriteLine($"PerformCapture(): {profile.ProfileName}, {profile.CaptureTarget}");
-
 			// 遅延キャプチャ
 			if (profile.UseDelay && profile.DelaySeconds > 0)
 			{
@@ -103,13 +100,19 @@ namespace WowShot2
 			// ファイル名生成
 			string fileName = ApplyFileNameTemplate(profile.FileNameTemplate, profile.LastUsedNumber, DateTime.Now);
 			string ext = profile.FileFormat.ToLower();
-			string fullPath = Path.Combine(profile.SaveDirectory, $"{fileName}.{ext}");
 
 			// ファイル保存
 			if (profile.SaveToFile)
 			{
-				Directory.CreateDirectory(profile.SaveDirectory);
-				captured.Save("C:\\Projects\\sample.jpg");
+				//Directory.CreateDirectory(profile.SaveDirectory);
+
+				string defaultSaveDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "WowShot2");
+
+				string saveDir = string.IsNullOrWhiteSpace(profile.SaveDirectory) ? defaultSaveDir : profile.SaveDirectory;
+				Directory.CreateDirectory(saveDir); // 存在しなければ作成
+
+				//string fullPath = Path.Combine(profile.SaveDirectory, $"{fileName}.{ext}");
+				string fullPath = Path.Combine(saveDir, $"{fileName}.{ext}");
 
 				captured.Save(fullPath, ext switch
 				{
@@ -235,7 +238,6 @@ namespace WowShot2
 				if (profile.UseShift) modifiers |= (int)HotKeyManager.Modifiers.Shift;
 				if (profile.UseAlt) modifiers |= (int)HotKeyManager.Modifiers.Alt;
 
-				// 🔧 HotKeyId をユニークにする
 				var manager = new HotKeyManager(dummyForm, profile.Key, (HotKeyManager.Modifiers)modifiers, id: hotKeyIdCounter++);
 
 				var boundProfile = profile;

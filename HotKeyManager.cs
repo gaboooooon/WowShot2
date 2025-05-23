@@ -32,7 +32,6 @@ namespace WowShot2
 		{
 			HotKeyId = id;
 			AssignHandle(hiddenForm.Handle);
-			//RegisterHotKey(this.Handle, hotkeyId, (uint)modifiers, key);
 
 			bool success = RegisterHotKey(this.Handle, HotKeyId, (uint)modifiers, key);
 			if (!success)
