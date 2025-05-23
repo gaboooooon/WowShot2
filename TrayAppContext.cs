@@ -106,22 +106,10 @@ namespace WowShot2
 			// ファイル保存
 			if (profile.SaveToFile)
 			{
-				//Directory.CreateDirectory(profile.SaveDirectory);
-
 				string defaultSaveDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "WowShot2");
 
 				string saveDir = string.IsNullOrWhiteSpace(profile.SaveDirectory) ? defaultSaveDir : profile.SaveDirectory;
 				Directory.CreateDirectory(saveDir); // 存在しなければ作成
-
-				//string fullPath = Path.Combine(profile.SaveDirectory, $"{fileName}.{ext}");
-				//string fullPath = Path.Combine(saveDir, $"{fileName}.{ext}");
-
-				//captured.Save(fullPath, ext switch
-				//{
-				//	"jpg" => ImageFormat.Jpeg,
-				//	"bmp" => ImageFormat.Bmp,
-				//	_ => ImageFormat.Png
-				//});
 
 				string baseFileName = $"{fileName}.{ext}";
 				string fullPath = Path.Combine(saveDir, baseFileName);
@@ -159,13 +147,6 @@ namespace WowShot2
 				settingsManager.Save();
 			}
 
-			//// 連番更新
-			//if (profile.RememberLastNumber)
-			//{
-			//	profile.LastUsedNumber++;
-			//	settingsManager.Save(); // JSONへ保存
-			//}
-
 			if (settingsManager.ShowCaptureNotification)
 			{
 				trayIcon.ShowBalloonTip(1000, "キャプチャ完了", $"{savedFileName} を保存しました", ToolTipIcon.Info);
@@ -186,7 +167,7 @@ namespace WowShot2
 			return bitmap != null;
 		}
 
-		private void OnOpenSettings(object sender, EventArgs e)
+		private void OnOpenSettings(object? sender, EventArgs e)
 		{
 			ShowSettingForm();
 		}
@@ -216,7 +197,7 @@ namespace WowShot2
 			settingForm.Show();
 		}
 
-		private void OnExit(object sender, EventArgs e)
+		private void OnExit(object? sender, EventArgs e)
 		{
 			foreach (var manager in hotKeyManagers)
 			{

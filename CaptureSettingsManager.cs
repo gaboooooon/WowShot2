@@ -35,7 +35,8 @@ namespace WowShot2
 			if (File.Exists(ConfigPath))
 			{
 				string json = File.ReadAllText(ConfigPath);
-				return JsonSerializer.Deserialize<CaptureSettingsManager>(json);
+				var loaded = JsonSerializer.Deserialize<CaptureSettingsManager>(json);
+				return loaded ?? new CaptureSettingsManager();
 			}
 
 			return new CaptureSettingsManager();

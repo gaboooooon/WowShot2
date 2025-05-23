@@ -6,7 +6,7 @@ namespace WowShot2
 {
 	public class HotKeyManager : NativeWindow, IDisposable
 	{
-		public event EventHandler HotKeyPressed;
+		public event EventHandler? HotKeyPressed;
 
 		private const int WM_HOTKEY = 0x0312;
 

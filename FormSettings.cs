@@ -13,7 +13,7 @@ namespace WowShot2
 {
 	public partial class FormSettings : Form
 	{
-		private CaptureSettingsManager settingsManager;
+		private CaptureSettingsManager settingsManager = new CaptureSettingsManager();
 		private CaptureShortcutProfile? selectedProfile;
 
 		private bool isCapturingKey = false;
@@ -142,11 +142,10 @@ namespace WowShot2
 				textBoxSaveDir.Text != selectedProfile.SaveDirectory ||
 				textBoxFileName.Text != selectedProfile.FileNameTemplate ||
 				comboBoxFormat.Text != selectedProfile.FileFormat ||
-				//checkBoxRememberNumber.Checked != selectedProfile.RememberLastNumber ||
 				checkBoxClipboard.Checked != selectedProfile.CopyToClipboard;
 		}
 
-		private void listBoxProfile_SelectedIndexChanged(object sender, EventArgs e)
+		private void listBoxProfile_SelectedIndexChanged(object? sender, EventArgs e)
 		{
 			if (selectedProfile != null && HasUnsavedChanges())
 			{
@@ -191,8 +190,6 @@ namespace WowShot2
 			textBoxSaveDir.Text = profile.SaveDirectory;
 			textBoxFileName.Text = profile.FileNameTemplate;
 			comboBoxFormat.Text = profile.FileFormat;
-
-			//checkBoxRememberNumber.Checked = profile.RememberLastNumber;
 
 			checkBoxClipboard.Checked = profile.CopyToClipboard;
 		}
@@ -246,7 +243,6 @@ namespace WowShot2
 			textBoxFileName.Text = "";
 			comboBoxFormat.SelectedIndex = -1;
 
-			//checkBoxRememberNumber.Checked = false;
 			checkBoxClipboard.Checked = false;
 		}
 
@@ -358,7 +354,6 @@ namespace WowShot2
 			selectedProfile.FileNameTemplate = textBoxFileName.Text;
 			selectedProfile.FileFormat = comboBoxFormat.Text;
 
-			//selectedProfile.RememberLastNumber = checkBoxRememberNumber.Checked;
 			selectedProfile.CopyToClipboard = checkBoxClipboard.Checked;
 
 			listBoxProfile.Items[listBoxProfile.SelectedIndex] = selectedProfile.ProfileName;
@@ -390,15 +385,6 @@ namespace WowShot2
 				p.UseShift == targetProfile.UseShift &&
 				p.UseAlt == targetProfile.UseAlt);
 		}
-
-		//private void buttonClearCounter_Click(object sender, EventArgs e)
-		//{
-		//	if (selectedProfile == null) return;
-
-		//	selectedProfile.LastUsedNumber = 0;
-		//	settingsManager.Save();
-		//	MessageBox.Show("連番を初期化しました。", "情報", MessageBoxButtons.OK, MessageBoxIcon.Information);
-		//}
 
 		private void buttonClearCounter_Click(object sender, EventArgs e)
 		{
