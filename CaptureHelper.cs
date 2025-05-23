@@ -108,28 +108,6 @@ namespace WowShot2
 			return bitmap;
 		}
 
-		//public static Bitmap? CaptureSelectedRegion()
-		//{
-		//	using FormRegionSelector selector = new FormRegionSelector();
-		//	if (selector.ShowDialog() == DialogResult.OK)
-		//	{
-		//		Rectangle region = selector.SelectedRegion;
-		//		if (region.Width == 0 || region.Height == 0)
-		//			throw new InvalidOperationException("範囲が無効です。");
-
-		//		Bitmap bitmap = new Bitmap(region.Width, region.Height);
-
-		//		using (Graphics g = Graphics.FromImage(bitmap))
-		//		{
-		//			g.CopyFromScreen(region.Location, Point.Empty, region.Size);
-		//		}
-
-		//		return bitmap;
-		//	}
-
-		//	return null;
-		//}
-
 		public static Bitmap? CaptureSelectedRegion()
 		{
 			using FormRegionSelector selector = new FormRegionSelector();

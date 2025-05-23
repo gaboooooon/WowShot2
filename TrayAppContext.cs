@@ -156,7 +156,6 @@ namespace WowShot2
 
 		private void ShowSettingForm()
 		{
-			//var settingForm = new FormSettings();
 			var settingForm = new FormSettings(this);
 
 			if (lastSettingFormLocation == null)
