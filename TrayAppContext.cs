@@ -26,7 +26,7 @@ namespace WowShot2
 		{
 			trayIcon = new NotifyIcon()
 			{
-				Icon = SystemIcons.Application,
+				Icon = Resource.TrayIcon,
 				ContextMenuStrip = new ContextMenuStrip(),
 				Text = "WowShot2",
 				Visible = true
@@ -43,6 +43,7 @@ namespace WowShot2
 			dummyForm.StartPosition = FormStartPosition.Manual;
 			dummyForm.Size = new Size(0, 0);
 			dummyForm.Location = new Point(-1000, -1000);
+			dummyForm.Icon = Resource.TrayIcon;
 
 			settingsManager = CaptureSettingsManager.Load();
 

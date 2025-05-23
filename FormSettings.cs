@@ -29,6 +29,8 @@ namespace WowShot2
 
 		private void FormSetting_Load(object sender, EventArgs e)
 		{
+			this.Icon = Resource.TrayIcon; // アイコンを設定
+
 			settingsManager = CaptureSettingsManager.Load();
 			foreach (var profile in settingsManager.Profiles)
 			{

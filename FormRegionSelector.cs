@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using WowShot2;
 
 public class FormRegionSelector : Form
 {
@@ -12,6 +13,7 @@ public class FormRegionSelector : Form
 
 	public FormRegionSelector()
 	{
+		this.Icon = Resource.TrayIcon; // アイコンを設定
 		this.FormBorderStyle = FormBorderStyle.None;
 		this.StartPosition = FormStartPosition.Manual;
 
