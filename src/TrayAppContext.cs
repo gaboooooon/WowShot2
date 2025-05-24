@@ -33,6 +33,7 @@ namespace WowShot2
 			};
 
 			trayIcon.ContextMenuStrip.Items.Add("キャプチャ設定...", null, OnOpenSettings);
+			trayIcon.ContextMenuStrip.Items.Add("バージョン情報...", null, OnAboutClicked);
 			trayIcon.ContextMenuStrip.Items.Add(new ToolStripSeparator());
 			trayIcon.ContextMenuStrip.Items.Add("終了", null, OnExit);
 
@@ -196,6 +197,13 @@ namespace WowShot2
 			};
 
 			settingForm.Show();
+		}
+
+		private void OnAboutClicked(object? sender, EventArgs e)
+		{
+			using var dlg = new FormAbout();
+			dlg.StartPosition = FormStartPosition.CenterScreen;
+			dlg.ShowDialog();
 		}
 
 		private void OnExit(object? sender, EventArgs e)
