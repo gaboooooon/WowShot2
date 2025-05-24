@@ -466,7 +466,6 @@
 			Name = "FormSettings";
 			Text = "WowShot2設定";
 			Load += FormSetting_Load;
-			KeyDown += FormSetting_KeyDown;
 			groupBoxProfile.ResumeLayout(false);
 			groupBoxProfile.PerformLayout();
 			ResumeLayout(false);

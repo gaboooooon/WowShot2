@@ -16,7 +16,7 @@ namespace WowShot2
 		private CaptureSettingsManager settingsManager = new CaptureSettingsManager();
 		private CaptureShortcutProfile? selectedProfile;
 
-		private bool isCapturingKey = false;
+		//private bool isCapturingKey = false;
 		private Keys capturedKey = Keys.None;
 
 		private TrayAppContext trayAppContext;
@@ -82,50 +82,50 @@ namespace WowShot2
 			{
 				capturedKey = keyForm.CapturedKey;
 				textBoxKey.Text = capturedKey.ToString();
-				checkBoxCtrl.Checked = keyForm.Modifiers.HasFlag(Keys.Control);
-				checkBoxShift.Checked = keyForm.Modifiers.HasFlag(Keys.Shift);
-				checkBoxAlt.Checked = keyForm.Modifiers.HasFlag(Keys.Alt);
+				//checkBoxCtrl.Checked = keyForm.Modifiers.HasFlag(Keys.Control);
+				//checkBoxShift.Checked = keyForm.Modifiers.HasFlag(Keys.Shift);
+				//checkBoxAlt.Checked = keyForm.Modifiers.HasFlag(Keys.Alt);
 			}
 		}
 
-		private void FormSetting_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (!isCapturingKey) return;
+		//private void FormSetting_KeyDown(object sender, KeyEventArgs e)
+		//{
+		//	if (!isCapturingKey) return;
 
-			// キャンセル：Escキー押下
-			if (e.KeyCode == Keys.Escape)
-			{
-				isCapturingKey = false;
-				this.KeyPreview = false;
-				capturedKey = Keys.None;
-				textBoxKey.Text = "None";
-				return;
-			}
+		//	// キャンセル：Escキー押下
+		//	if (e.KeyCode == Keys.Escape)
+		//	{
+		//		isCapturingKey = false;
+		//		this.KeyPreview = false;
+		//		capturedKey = Keys.None;
+		//		textBoxKey.Text = "None";
+		//		return;
+		//	}
 
-			// 無効：Ctrl/Shift/Alt単独
-			if (e.KeyCode == Keys.ControlKey ||
-				e.KeyCode == Keys.ShiftKey ||
-				e.KeyCode == Keys.Menu) // Altキー
-			{
-				//MessageBox.Show("Ctrl / Shift / Alt 単独では登録できません。", "無効なキー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-				//textBoxKey.Text = "キーを押してください...";
-				return;
-			}
+		//	// 無効：Ctrl/Shift/Alt単独
+		//	if (e.KeyCode == Keys.ControlKey ||
+		//		e.KeyCode == Keys.ShiftKey ||
+		//		e.KeyCode == Keys.Menu) // Altキー
+		//	{
+		//		//MessageBox.Show("Ctrl / Shift / Alt 単独では登録できません。", "無効なキー", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+		//		//textBoxKey.Text = "キーを押してください...";
+		//		return;
+		//	}
 
-			// 有効なキー入力
-			isCapturingKey = false;
-			this.KeyPreview = false;
+		//	// 有効なキー入力
+		//	isCapturingKey = false;
+		//	this.KeyPreview = false;
 
-			capturedKey = e.KeyCode;
-			textBoxKey.Text = e.KeyCode.ToString();
+		//	capturedKey = e.KeyCode;
+		//	textBoxKey.Text = e.KeyCode.ToString();
 
-			// ※キーキャプチャは修飾キーは対象にしない（※修飾キーはチェックボックスで設定してもらう）
-			//checkBoxCtrl.Checked = e.Control;
-			//checkBoxShift.Checked = e.Shift;
-			//checkBoxAlt.Checked = e.Alt;
+		//	// ※キーキャプチャは修飾キーは対象にしない（※修飾キーはチェックボックスで設定してもらう）
+		//	//checkBoxCtrl.Checked = e.Control;
+		//	//checkBoxShift.Checked = e.Shift;
+		//	//checkBoxAlt.Checked = e.Alt;
 
-			e.SuppressKeyPress = true;
-		}
+		//	e.SuppressKeyPress = true;
+		//}
 
 		private void buttonAdd_Click(object sender, EventArgs e)
 		{
