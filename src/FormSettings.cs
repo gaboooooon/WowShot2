@@ -68,11 +68,24 @@ namespace WowShot2
 			checkBoxShowNotification.Checked = settingsManager.ShowCaptureNotification;
 		}
 
+		//private void buttonKeyCapture_Click(object sender, EventArgs e)
+		//{
+		//	isCapturingKey = true;
+		//	textBoxKey.Text = "キーを押してください...";
+		//	this.KeyPreview = true; // フォームでKeyDownを受け取る
+		//}
+
 		private void buttonKeyCapture_Click(object sender, EventArgs e)
 		{
-			isCapturingKey = true;
-			textBoxKey.Text = "キーを押してください...";
-			this.KeyPreview = true; // フォームでKeyDownを受け取る
+			using var keyForm = new FormKeyCapture();
+			if (keyForm.ShowDialog() == DialogResult.OK)
+			{
+				capturedKey = keyForm.CapturedKey;
+				textBoxKey.Text = capturedKey.ToString();
+				checkBoxCtrl.Checked = keyForm.Modifiers.HasFlag(Keys.Control);
+				checkBoxShift.Checked = keyForm.Modifiers.HasFlag(Keys.Shift);
+				checkBoxAlt.Checked = keyForm.Modifiers.HasFlag(Keys.Alt);
+			}
 		}
 
 		private void FormSetting_KeyDown(object sender, KeyEventArgs e)
