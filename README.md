@@ -18,12 +18,26 @@ Windows定番のキャプチャツール **「WinShot」** がマルチディス
 
 ---
 
-## 💾 ダウンロード
+## ✉️ 作者連絡先
 
-最新版は [Releases](https://github.com/gaboooooon/WowShot2/releases) ページからどうぞ。
+メールアドレス：gaboooooon@gmail.com  
+GitHub Issue ページ：https://github.com/gaboooooon/WowShot2/issues  
 
-- WowShot2.zip をダウンロード・解凍して `WowShot2.exe` を実行してください
-- インストール不要、レジストリ不使用
+ご意見・不具合報告等は上記の GitHub Issue ページをご利用ください（どなたでも利用可）。  
+作者が直接管理しております。  
+
+---
+
+## 💾 インストール・アンインストール方法
+
+### インストール方法
+- [Releases](https://github.com/gaboooooon/WowShot2/releases) から `WowShot2.zip` をダウンロードし、解凍して `WowShot2.exe` を実行してください。
+- インストール作業は不要です。
+- レジストリは使用していません。
+
+### アンインストール方法
+- 解凍したフォルダを削除するだけでアンインストールされます。
+- 「プログラムの追加と削除」には表示されませんのでご注意ください。
 
 ---
 
@@ -90,6 +104,9 @@ Created by がぶーん（Gaboooooon）
 ---
 
 ## 📜 変更履歴
+
+### v1.0.1 (2025-06-04)
+- README.md及びreadme.txtの更新
 
 ### v1.0.1 (2025-05-24)
 - 多重起動の防止
