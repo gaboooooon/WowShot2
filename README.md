@@ -23,7 +23,7 @@ Windows定番のキャプチャツール **「WinShot」** がマルチディス
 メールアドレス：gaboooooon@gmail.com  
 GitHub Issue ページ：https://github.com/gaboooooon/WowShot2/issues  
 
-ご意見・不具合報告等は上記の GitHub Issue ページをご利用ください（どなたでも利用可）。  
+ご意見・不具合報告等は上記のメールアドレス又は GitHub Issue ページをご利用ください（どなたでも利用可）。  
 作者が直接管理しております。  
 
 ---
@@ -92,13 +92,6 @@ GitHub Issue ページ：https://github.com/gaboooooon/WowShot2/issues
 ## 🙏 クレジット
 
 Created by [がぶーん（Gaboooooon）](https://github.com/gaboooooon)  
-アイコン・ライブラリ等の著作権は各提供者に帰属します。
-
-...
-
-## 🙏 クレジット
-
-Created by がぶーん（Gaboooooon）  
 アイコン・ライブラリ等の著作権は各提供者に帰属します。
 
 ---
