@@ -99,60 +99,64 @@ namespace WowShot2
 				return;
 			}
 
-			// ファイル名生成
-			int number = settingsManager.GlobalLastUsedNumber;
-			string fileName = ApplyFileNameTemplate(profile.FileNameTemplate, number, DateTime.Now);
-			string ext = profile.FileFormat.ToLower();
-			string savedFileName = fileName;
-
-			// ファイル保存
-			if (profile.SaveToFile)
+			using (captured)
 			{
-				string defaultSaveDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "WowShot2");
 
-				string saveDir = string.IsNullOrWhiteSpace(profile.SaveDirectory) ? defaultSaveDir : profile.SaveDirectory;
-				Directory.CreateDirectory(saveDir); // 存在しなければ作成
+				// ファイル名生成
+				int number = settingsManager.GlobalLastUsedNumber;
+				string fileName = ApplyFileNameTemplate(profile.FileNameTemplate, number, DateTime.Now);
+				string ext = profile.FileFormat.ToLower();
+				string savedFileName = fileName;
 
-				string baseFileName = $"{fileName}.{ext}";
-				string fullPath = Path.Combine(saveDir, baseFileName);
-
-				// 上書きを避けるためのファイル名補正処理
-				int count = 1;
-				while (File.Exists(fullPath))
+				// ファイル保存
+				if (profile.SaveToFile)
 				{
-					string numberedFileName = $"{fileName}_{count}.{ext}";
-					fullPath = Path.Combine(saveDir, numberedFileName);
-					count++;
+					string defaultSaveDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "WowShot2");
+
+					string saveDir = string.IsNullOrWhiteSpace(profile.SaveDirectory) ? defaultSaveDir : profile.SaveDirectory;
+					Directory.CreateDirectory(saveDir); // 存在しなければ作成
+
+					string baseFileName = $"{fileName}.{ext}";
+					string fullPath = Path.Combine(saveDir, baseFileName);
+
+					// 上書きを避けるためのファイル名補正処理
+					int count = 1;
+					while (File.Exists(fullPath))
+					{
+						string numberedFileName = $"{fileName}_{count}.{ext}";
+						fullPath = Path.Combine(saveDir, numberedFileName);
+						count++;
+					}
+
+					// 保存
+					captured.Save(fullPath, ext switch
+					{
+						"jpg" => ImageFormat.Jpeg,
+						"bmp" => ImageFormat.Bmp,
+						_ => ImageFormat.Png
+					});
+
+					savedFileName = Path.GetFileName(fullPath); // 保存したファイル名を取得
 				}
 
-				// 保存
-				captured.Save(fullPath, ext switch
+				// クリップボードにコピー
+				if (profile.CopyToClipboard)
 				{
-					"jpg" => ImageFormat.Jpeg,
-					"bmp" => ImageFormat.Bmp,
-					_ => ImageFormat.Png
-				});
+					Clipboard.SetImage(captured);
+				}
 
-				savedFileName = Path.GetFileName(fullPath); // 保存したファイル名を取得
-			}
+				// 連番更新
+				if (settingsManager.RememberGlobalLastUsedNumber)
+				{
+					settingsManager.GlobalLastUsedNumber++;
+					settingsManager.Save();
+				}
 
-			// クリップボードにコピー
-			if (profile.CopyToClipboard)
-			{
-				Clipboard.SetImage(captured);
-			}
-
-			// 連番更新
-			if (settingsManager.RememberGlobalLastUsedNumber)
-			{
-				settingsManager.GlobalLastUsedNumber++;
-				settingsManager.Save();
-			}
-
-			if (settingsManager.ShowCaptureNotification)
-			{
-				trayIcon.ShowBalloonTip(1000, "キャプチャ完了", $"{savedFileName} を保存しました", ToolTipIcon.Info);
-			}
+				if (settingsManager.ShowCaptureNotification)
+				{
+					trayIcon.ShowBalloonTip(1000, "キャプチャ完了", $"{savedFileName} を保存しました", ToolTipIcon.Info);
+				}
+			} // End using
 		}
 
 		private bool TryCaptureDisplay(string target, out Bitmap? bitmap)
