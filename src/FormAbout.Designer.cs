@@ -65,7 +65,7 @@
 			labelVersion.Name = "labelVersion";
 			labelVersion.Size = new Size(269, 54);
 			labelVersion.TabIndex = 2;
-			labelVersion.Text = "Version1.0.0.0";
+			labelVersion.Text = "Version1.0.2.0";
 			// 
 			// labelCopyright
 			// 
@@ -75,7 +75,7 @@
 			labelCopyright.Name = "labelCopyright";
 			labelCopyright.Size = new Size(353, 32);
 			labelCopyright.TabIndex = 3;
-			labelCopyright.Text = "Copyright(c) 2025 gaboooooon";
+			labelCopyright.Text = "Copyright(c) 2026 gaboooooon";
 			// 
 			// linkLabelGitHub
 			// 
