@@ -37,6 +37,9 @@ namespace WowShot2
 			trayIcon.ContextMenuStrip.Items.Add(new ToolStripSeparator());
 			trayIcon.ContextMenuStrip.Items.Add("終了", null, OnExit);
 
+			// ダブルクリックで設定画面を開く
+			trayIcon.MouseDoubleClick += OnOpenSettings;
+
 			// 非表示フォーム作成
 			dummyForm = new Form();
 			dummyForm.ShowInTaskbar = false;
