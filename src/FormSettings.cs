@@ -334,7 +334,7 @@ namespace WowShot2
 			settingsManager.Save();
 			trayAppContext.ReRegisterHotKeys(settingsManager); // ← 再登録を通知
 
-			MessageBox.Show("設定を保存しました。", "情報", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			//MessageBox.Show("設定を保存しました。", "情報", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 
 		private bool IsHotKeyConflict(CaptureShortcutProfile targetProfile)
