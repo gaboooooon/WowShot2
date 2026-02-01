@@ -13,8 +13,8 @@
     <Authors>Gaboooooon</Authors>
     <Description>Windows用 高機能キャプチャツール</Description>
     <Copyright>© 2026 Gaboooooon</Copyright>
-    <AssemblyVersion>1.0.2.0</AssemblyVersion>
-    <FileVersion>1.0.2.0</FileVersion>
+    <AssemblyVersion>1.0.3.0</AssemblyVersion>
+    <FileVersion>1.0.3.0</FileVersion>
     <ApplicationIcon>WowShot2.ico</ApplicationIcon>
   </PropertyGroup>
 

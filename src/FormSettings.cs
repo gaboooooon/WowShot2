@@ -31,15 +31,7 @@ namespace WowShot2
 		{
 			this.Icon = Resource.TrayIcon; // アイコンを設定
 
-			settingsManager = CaptureSettingsManager.Load();
-			foreach (var profile in settingsManager.Profiles)
-			{
-				listBoxProfile.Items.Add(profile.ProfileName);
-			}
-
-			if (listBoxProfile.Items.Count > 0)
-				listBoxProfile.SelectedIndex = 0;
-
+			// UI初期化（コンボボックス等）を先に行う
 			comboBoxFormat.Items.Clear();
 			comboBoxFormat.Items.AddRange(new string[] { "jpg", "png", "bmp" });
 			comboBoxFormat.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -63,6 +55,16 @@ namespace WowShot2
 			});
 			comboBoxTarget.DropDownStyle = ComboBoxStyle.DropDownList;
 			comboBoxTarget.SelectedIndex = 2; // デフォルト：全ディスプレイ
+
+			// 設定読み込みとプロファイル表示
+			settingsManager = CaptureSettingsManager.Load();
+			foreach (var profile in settingsManager.Profiles)
+			{
+				listBoxProfile.Items.Add(profile.ProfileName);
+			}
+
+			if (listBoxProfile.Items.Count > 0)
+				listBoxProfile.SelectedIndex = 0; // ここで LoadProfileToUI が呼ばれ、上記コンボボックスの値が上書きされる
 
 			checkBoxRememberNumber.Checked = settingsManager.RememberGlobalLastUsedNumber;
 			checkBoxShowNotification.Checked = settingsManager.ShowCaptureNotification;
