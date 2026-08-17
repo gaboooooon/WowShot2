@@ -103,8 +103,9 @@ namespace WowShot2
 			menu.ShowItemToolTips = true;
 			menu.Items.Clear();
 
-			menu.Items.Add("キャプチャ設定...", null, OnOpenSettings);
 			menu.Items.Add(BuildOpenFolderItem());
+			menu.Items.Add(new ToolStripSeparator());
+			menu.Items.Add("キャプチャ設定...", null, OnOpenSettings);
 			menu.Items.Add("バージョン情報...", null, OnAboutClicked);
 			menu.Items.Add(new ToolStripSeparator());
 			menu.Items.Add("終了", null, OnExit);
