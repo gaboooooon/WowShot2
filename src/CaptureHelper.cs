@@ -85,7 +85,9 @@ namespace WowShot2
 			if (hWnd == IntPtr.Zero)
 				throw new InvalidOperationException("アクティブウィンドウが取得できませんでした。");
 
-			// DPI補正済みのウィンドウ矩形を取得
+			// 影を除いたウィンドウ矩形を取得。
+			// ※この座標は「呼び出し元プロセスの DPI 認識空間」で返るため、
+			//   画面 DC（BitBlt 元）と一致させるにはプロセスが PerMonitorV2 である必要がある。
 			RECT rect;
 			int result = DwmGetWindowAttribute(hWnd, DWMWA_EXTENDED_FRAME_BOUNDS, out rect, Marshal.SizeOf(typeof(RECT)));
 			if (result != 0)
@@ -113,18 +115,11 @@ namespace WowShot2
 			using FormRegionSelector selector = new FormRegionSelector();
 			if (selector.ShowDialog() == DialogResult.OK)
 			{
-				Rectangle region = selector.SelectedRegion;
+				// FormRegionSelector はスクリーン座標（物理ピクセル）で返すため追加の補正は不要
+				Rectangle screenRegion = selector.SelectedRegion;
 
-				if (region.Width == 0 || region.Height == 0)
+				if (screenRegion.Width == 0 || screenRegion.Height == 0)
 					throw new InvalidOperationException("範囲が無効です。");
-
-				// ✅ 選択範囲の座標を「仮想スクリーン左上」基準に補正
-				Rectangle screenRegion = new Rectangle(
-					region.Left + SystemInformation.VirtualScreen.Left,
-					region.Top + SystemInformation.VirtualScreen.Top,
-					region.Width,
-					region.Height
-				);
 
 				Bitmap bitmap = new Bitmap(screenRegion.Width, screenRegion.Height);
 

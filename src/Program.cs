@@ -16,6 +16,10 @@ namespace WowShot2
 		[STAThread]
 		static void Main()
 		{
+			// DPI認識モードは最初のウィンドウ生成より前に確定させる必要がある。
+			// （多重起動時の MessageBox より後ろに置くと Unaware で固定されてしまう）
+			ApplicationConfiguration.Initialize();
+
 			bool createdNew;
 			using var mutex = new System.Threading.Mutex(true, "WowShot2_Mutex", out createdNew);
 
@@ -43,7 +47,6 @@ namespace WowShot2
 				return;
 			}
 
-			ApplicationConfiguration.Initialize();
 			Application.Run(new TrayAppContext());
 		}
 	}

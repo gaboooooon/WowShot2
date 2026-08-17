@@ -400,3 +400,6 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# WowShot2: ユーザー個別の設定ファイル（実行時に自動生成される）
+profiles.json

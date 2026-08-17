@@ -6,6 +6,10 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <!-- 混在DPI環境（例: 4K@150% + 2K@125%）でキャプチャ座標を物理ピクセルに一致させるため
+         Per-Monitor V2 を必須とする。既定の SystemAware ではプライマリのDPI換算座標が返り、
+         画面DC（BitBlt元）の物理座標とズレて画像の端が欠落する。 -->
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
     <ApplicationTitle>WowShot2</ApplicationTitle>
     <AssemblyTitle>WowShot2</AssemblyTitle>
     <Product>WowShot2</Product>
@@ -13,8 +17,9 @@
     <Authors>Gaboooooon</Authors>
     <Description>Windows用 高機能キャプチャツール</Description>
     <Copyright>© 2026 Gaboooooon</Copyright>
-    <AssemblyVersion>1.0.3.0</AssemblyVersion>
-    <FileVersion>1.0.3.0</FileVersion>
+    <Version>1.0.4</Version>
+    <AssemblyVersion>1.0.4.0</AssemblyVersion>
+    <FileVersion>1.0.4.0</FileVersion>
     <ApplicationIcon>WowShot2.ico</ApplicationIcon>
   </PropertyGroup>
 

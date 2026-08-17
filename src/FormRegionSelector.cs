@@ -1,10 +1,18 @@
 ﻿using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using WowShot2;
 
 public class FormRegionSelector : Form
 {
+	[DllImport("user32.dll", SetLastError = true)]
+	private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+
+	private const uint SWP_NOZORDER = 0x0004;
+	private const uint SWP_NOACTIVATE = 0x0010;
+
+	/// <summary>選択範囲。スクリーン座標（物理ピクセル）で返す。</summary>
 	public Rectangle SelectedRegion { get; private set; } = Rectangle.Empty;
 
 	private Point startPoint;
@@ -17,9 +25,12 @@ public class FormRegionSelector : Form
 		this.FormBorderStyle = FormBorderStyle.None;
 		this.StartPosition = FormStartPosition.Manual;
 
+		// PerMonitorV2 では 1 枚のフォームが異なる DPI のモニタにまたがるため、
+		// WinForms の自動スケーリングを無効化し、物理ピクセルのまま扱う。
+		this.AutoScaleMode = AutoScaleMode.None;
+
 		// ✅ 全ディスプレイをカバーする領域に表示
-		this.Location = SystemInformation.VirtualScreen.Location;
-		this.Size = SystemInformation.VirtualScreen.Size;
+		this.Bounds = SystemInformation.VirtualScreen;
 
 		this.DoubleBuffered = true;
 		this.TopMost = true;
@@ -48,10 +59,42 @@ public class FormRegionSelector : Form
 		this.MouseUp += (s, e) =>
 		{
 			dragging = false;
-			SelectedRegion = GetRectangle(startPoint, endPoint);
+			Rectangle clientRegion = GetRectangle(startPoint, endPoint);
+			// クライアント座標 → スクリーン座標（物理ピクセル）に変換して返す。
+			// 呼び出し側で VirtualScreen のオフセットを足す必要はない。
+			SelectedRegion = new Rectangle(this.PointToScreen(clientRegion.Location), clientRegion.Size);
 			DialogResult = DialogResult.OK;
 			Close();
 		};
+	}
+
+	protected override void OnHandleCreated(EventArgs e)
+	{
+		base.OnHandleCreated(e);
+		ApplyVirtualScreenBounds();
+	}
+
+	protected override void OnShown(EventArgs e)
+	{
+		base.OnShown(e);
+		ApplyVirtualScreenBounds();
+	}
+
+	// 複数 DPI にまたがるオーバーレイなので、DPI 変更に伴う自動リサイズ・再スケールを抑止する。
+	protected override void OnDpiChanged(DpiChangedEventArgs e)
+	{
+		e.Cancel = true;
+		base.OnDpiChanged(e);
+		ApplyVirtualScreenBounds();
+	}
+
+	/// <summary>
+	/// WinForms の DPI スケーリングを経由せず、仮想スクリーン全体を物理ピクセルで直接指定する。
+	/// </summary>
+	private void ApplyVirtualScreenBounds()
+	{
+		Rectangle vs = SystemInformation.VirtualScreen;
+		SetWindowPos(this.Handle, IntPtr.Zero, vs.Left, vs.Top, vs.Width, vs.Height, SWP_NOZORDER | SWP_NOACTIVATE);
 	}
 
 	protected override void OnPaint(PaintEventArgs e)
