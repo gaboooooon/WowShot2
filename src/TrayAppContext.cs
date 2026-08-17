@@ -32,11 +32,6 @@ namespace WowShot2
 				Visible = true
 			};
 
-			trayIcon.ContextMenuStrip.Items.Add("キャプチャ設定...", null, OnOpenSettings);
-			trayIcon.ContextMenuStrip.Items.Add("バージョン情報...", null, OnAboutClicked);
-			trayIcon.ContextMenuStrip.Items.Add(new ToolStripSeparator());
-			trayIcon.ContextMenuStrip.Items.Add("終了", null, OnExit);
-
 			// ダブルクリックで設定画面を開く
 			trayIcon.MouseDoubleClick += OnOpenSettings;
 
@@ -50,6 +45,9 @@ namespace WowShot2
 			dummyForm.Icon = Resource.TrayIcon;
 
 			settingsManager = CaptureSettingsManager.Load();
+
+			// メニューは保存先を参照するため、settingsManager のロード後に組み立てる
+			RebuildTrayMenu();
 
 			int hotKeyIdCounter = 1;
 
@@ -72,6 +70,119 @@ namespace WowShot2
 
 			dummyForm.Load += (s, e) => dummyForm.Hide();
 			dummyForm.Show();
+		}
+
+		/// <summary>
+		/// プロファイルの実効的な保存先を返す。未設定なら既定値にフォールバックする。
+		/// </summary>
+		public static string ResolveSaveDirectory(CaptureShortcutProfile profile)
+		{
+			if (!string.IsNullOrWhiteSpace(profile.SaveDirectory))
+				return profile.SaveDirectory;
+
+			return Path.Combine(
+				Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "WowShot2");
+		}
+
+		/// <summary>
+		/// 同一フォルダを判定するためにパスを正規化する。
+		/// </summary>
+		private static string NormalizeDirectory(string dir)
+		{
+			try { return Path.TrimEndingDirectorySeparator(Path.GetFullPath(dir)); }
+			catch { return dir; }
+		}
+
+		/// <summary>
+		/// タスクトレイのコンテキストメニューを組み立てる。
+		/// 保存先は設定変更で変わるため、設定保存時にも呼び直す必要がある。
+		/// </summary>
+		private void RebuildTrayMenu()
+		{
+			var menu = trayIcon.ContextMenuStrip ??= new ContextMenuStrip();
+			menu.ShowItemToolTips = true;
+			menu.Items.Clear();
+
+			menu.Items.Add("キャプチャ設定...", null, OnOpenSettings);
+			menu.Items.Add(BuildOpenFolderItem());
+			menu.Items.Add("バージョン情報...", null, OnAboutClicked);
+			menu.Items.Add(new ToolStripSeparator());
+			menu.Items.Add("終了", null, OnExit);
+		}
+
+		/// <summary>
+		/// 「キャプチャフォルダを開く」項目を作る。
+		/// 保存先が複数ある場合はサブメニューで選択させる。
+		/// </summary>
+		private ToolStripItem BuildOpenFolderItem()
+		{
+			var groups = settingsManager.Profiles
+				.Where(p => p.SaveToFile)
+				.GroupBy(p => NormalizeDirectory(ResolveSaveDirectory(p)), StringComparer.OrdinalIgnoreCase)
+				.ToList();
+
+			if (groups.Count == 0)
+			{
+				return new ToolStripMenuItem("キャプチャフォルダを開く")
+				{
+					Enabled = false,
+					ToolTipText = "ファイル保存が有効なプロファイルがありません。"
+				};
+			}
+
+			if (groups.Count == 1)
+			{
+				string only = groups[0].Key;
+				return new ToolStripMenuItem("キャプチャフォルダを開く", null, (s, e) => OpenFolder(only))
+				{
+					ToolTipText = only
+				};
+			}
+
+			var parent = new ToolStripMenuItem("キャプチャフォルダを開く");
+
+			foreach (var group in groups)
+			{
+				string dir = group.Key;
+				string names = string.Join("、", group.Select(p => p.ProfileName));
+
+				parent.DropDownItems.Add(new ToolStripMenuItem($"{dir}（{names}）", null, (s, e) => OpenFolder(dir))
+				{
+					ToolTipText = dir
+				});
+			}
+
+			return parent;
+		}
+
+		/// <summary>
+		/// 保存先フォルダをエクスプローラーで開く。存在しない場合は作成せず通知する。
+		/// </summary>
+		private void OpenFolder(string dir)
+		{
+			if (!Directory.Exists(dir))
+			{
+				MessageBox.Show(
+					$"キャプチャフォルダが存在しません。\n\n{dir}\n\nキャプチャを実行すると自動的に作成されます。",
+					"キャプチャフォルダを開く",
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Information);
+				return;
+			}
+
+			try
+			{
+				// Directory.Exists を通ったパスのみ渡す（ShellExecute による意図しない実行を防ぐ）
+				Process.Start(new ProcessStartInfo(dir) { UseShellExecute = true });
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(
+					$"フォルダを開けませんでした。\n\n{dir}\n\n{ex.Message}",
+					"キャプチャフォルダを開く",
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Error);
+			}
 		}
 
 		private async void PerformCapture(CaptureShortcutProfile profile)
@@ -114,9 +225,7 @@ namespace WowShot2
 				// ファイル保存
 				if (profile.SaveToFile)
 				{
-					string defaultSaveDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "WowShot2");
-
-					string saveDir = string.IsNullOrWhiteSpace(profile.SaveDirectory) ? defaultSaveDir : profile.SaveDirectory;
+					string saveDir = ResolveSaveDirectory(profile);
 					Directory.CreateDirectory(saveDir); // 存在しなければ作成
 
 					string baseFileName = $"{fileName}.{ext}";
@@ -276,6 +385,9 @@ namespace WowShot2
 
 				hotKeyManagers.Add(manager);
 			}
+
+			// 保存先が変更されている可能性があるため、メニューも作り直す
+			RebuildTrayMenu();
 		}
 	}
 }
