@@ -17,9 +17,9 @@
     <Authors>Gaboooooon</Authors>
     <Description>Windows用 高機能キャプチャツール</Description>
     <Copyright>© 2026 Gaboooooon</Copyright>
-    <Version>1.0.5</Version>
-    <AssemblyVersion>1.0.5.0</AssemblyVersion>
-    <FileVersion>1.0.5.0</FileVersion>
+    <Version>1.0.6</Version>
+    <AssemblyVersion>1.0.6.0</AssemblyVersion>
+    <FileVersion>1.0.6.0</FileVersion>
     <ApplicationIcon>WowShot2.ico</ApplicationIcon>
   </PropertyGroup>
 

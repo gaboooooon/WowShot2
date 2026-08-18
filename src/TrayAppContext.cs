@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -188,6 +189,20 @@ namespace WowShot2
 
 		private async void PerformCapture(CaptureShortcutProfile profile)
 		{
+			// async void のため、例外を取りこぼすとアプリごと落ちる。ここで必ず捕捉する。
+			try
+			{
+				await PerformCaptureCore(profile);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show($"キャプチャ処理でエラーが発生しました。\n\n{ex.Message}",
+								"キャプチャエラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+
+		private async Task PerformCaptureCore(CaptureShortcutProfile profile)
+		{
 			// 遅延キャプチャ
 			if (profile.UseDelay && profile.DelaySeconds > 0)
 			{
@@ -253,9 +268,13 @@ namespace WowShot2
 				}
 
 				// クリップボードにコピー
+				// 他プロセスがクリップボードをロックしていると失敗するため、
+				// 数回リトライし、それでも駄目なら保存・通知の処理は継続する。
+				bool clipboardFailed = false;
+
 				if (profile.CopyToClipboard)
 				{
-					Clipboard.SetImage(captured);
+					clipboardFailed = !await TryCopyToClipboardAsync(captured);
 				}
 
 				// 連番更新
@@ -267,9 +286,47 @@ namespace WowShot2
 
 				if (settingsManager.ShowCaptureNotification)
 				{
-					trayIcon.ShowBalloonTip(1000, "キャプチャ完了", $"{savedFileName} を保存しました", ToolTipIcon.Info);
+					if (clipboardFailed)
+					{
+						trayIcon.ShowBalloonTip(1000, "キャプチャ完了",
+							$"{savedFileName} を保存しました\n（クリップボードへのコピーに失敗しました）", ToolTipIcon.Warning);
+					}
+					else
+					{
+						trayIcon.ShowBalloonTip(1000, "キャプチャ完了", $"{savedFileName} を保存しました", ToolTipIcon.Info);
+					}
 				}
 			} // End using
+		}
+
+		/// <summary>
+		/// クリップボードへコピーする。他プロセスがロックしている場合に備えて数回リトライする。
+		/// </summary>
+		/// <returns>コピーに成功した場合は true。</returns>
+		private static async Task<bool> TryCopyToClipboardAsync(Bitmap bitmap)
+		{
+			const int MaxAttempts = 3;
+
+			for (int attempt = 1; attempt <= MaxAttempts; attempt++)
+			{
+				try
+				{
+					Clipboard.SetImage(bitmap);
+					return true;
+				}
+				catch (ExternalException)
+				{
+					// CLIPBRD_E_CANT_OPEN。クリップボード履歴ツール等と競合すると発生する。
+					if (attempt == MaxAttempts) return false;
+					await Task.Delay(100);
+				}
+				catch (Exception)
+				{
+					return false;
+				}
+			}
+
+			return false;
 		}
 
 		private bool TryCaptureDisplay(string target, out Bitmap? bitmap)

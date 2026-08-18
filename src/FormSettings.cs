@@ -333,6 +333,11 @@ namespace WowShot2
 				return;
 			}
 
+			// 全体設定（プロファイル横断）を UI から反映する。
+			// ※「適用」でも反映されるよう、OK ボタン側ではなく保存直前のここで行う。
+			settingsManager.RememberGlobalLastUsedNumber = checkBoxRememberNumber.Checked;
+			settingsManager.ShowCaptureNotification = checkBoxShowNotification.Checked;
+
 			settingsManager.Save();
 			trayAppContext.ReRegisterHotKeys(settingsManager); // ← 再登録を通知
 
@@ -364,10 +369,7 @@ namespace WowShot2
 
 		private void buttonOK_Click(object sender, EventArgs e)
 		{
-			settingsManager.RememberGlobalLastUsedNumber = checkBoxRememberNumber.Checked;
-			settingsManager.ShowCaptureNotification = checkBoxShowNotification.Checked;
-
-			buttonApply_Click(sender, e); // 保存処理
+			buttonApply_Click(sender, e); // 保存処理（全体設定の反映を含む）
 			this.Close();
 		}
 

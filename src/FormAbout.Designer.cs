@@ -65,7 +65,7 @@
 			labelVersion.Name = "labelVersion";
 			labelVersion.Size = new Size(269, 54);
 			labelVersion.TabIndex = 2;
-			labelVersion.Text = "Version1.0.5.0";
+			labelVersion.Text = "Version1.0.6.0";
 			// 
 			// labelCopyright
 			// 
